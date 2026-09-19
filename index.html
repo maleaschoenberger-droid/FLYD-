@@ -3,152 +3,748 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎸 BandSong</title>
+
+  <title>FLYD · Music. Together.</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --black: #050505;
+      --black-2: #080808;
+      --panel: #0d0d0d;
+      --panel-2: #141414;
+      --line: #292929;
+
+      --white: #f7f7f7;
+      --muted: #9d9d9d;
+
+      --pink: #ff696d;
+      --turquoise: #40E0D0;
+
+      --shadow-pink: rgba(255, 105, 109, .18);
+      --shadow-turquoise: rgba(64, 224, 208, .18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
-      color: #182033;
+      min-height: 100vh;
+
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 5% 10%,
+          rgba(64, 224, 208, .12),
+          transparent 25%
+        ),
+        radial-gradient(
+          circle at 95% 15%,
+          rgba(255, 105, 109, .12),
+          transparent 25%
+        ),
+        radial-gradient(
+          circle at 10% 95%,
+          rgba(64, 224, 208, .08),
+          transparent 22%
+        ),
+        radial-gradient(
+          circle at 90% 95%,
+          rgba(255, 105, 109, .08),
+          transparent 22%
+        ),
+        var(--black);
+
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          rgba(255,255,255,.018) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,.018) 1px,
+          transparent 1px
+        );
+
+      background-size: 40px 40px;
+
+      mask-image:
+        linear-gradient(
+          to bottom,
+          rgba(0,0,0,.8),
+          transparent 85%
+        );
+
+      z-index: -1;
     }
 
     .container {
-      max-width: 850px;
+      width: min(1120px, calc(100% - 32px));
       margin: auto;
-      padding: 30px 16px 60px;
+      padding: 45px 0 55px;
     }
 
-    h1 {
-      margin-bottom: 5px;
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 25px 0 40px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 140px;
+      left: 50%;
+      top: 20px;
+
+      transform: translateX(-50%);
+
+      background:
+        radial-gradient(
+          ellipse,
+          rgba(64,224,208,.13),
+          transparent 70%
+        );
+
+      filter: blur(15px);
+      pointer-events: none;
+    }
+
+    .logo {
+      position: relative;
+      display: inline-block;
+
+      margin: 0;
+
+      font-size: clamp(4.5rem, 15vw, 9rem);
+      line-height: .85;
+
+      font-weight: 1000;
+      letter-spacing: -0.09em;
+
+      color: var(--white);
+
+      text-shadow:
+        -3px 0 var(--turquoise),
+        4px 0 rgba(255,105,109,.65),
+        0 0 35px rgba(64,224,208,.16);
+
+      user-select: none;
+    }
+
+    .logo span {
+      color: var(--pink);
+
+      text-shadow:
+        -3px 0 var(--turquoise),
+        0 0 30px rgba(255,105,109,.28);
     }
 
     .subtitle {
-      color: #68738a;
-      margin-top: 0;
+      position: relative;
+
+      max-width: 720px;
+      margin: 22px auto 0;
+
+      color: #c9c9c9;
+      font-size: 16px;
+      line-height: 1.6;
     }
+
+    /* =========================
+       CARDS
+    ========================= */
 
     .card {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
+      position: relative;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.025),
+          rgba(255,255,255,.008)
+        ),
+        var(--panel);
+
+      border: 1px solid var(--line);
+      border-radius: 24px;
+
+      padding: 24px;
       margin-top: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.06);
+
+      box-shadow:
+        0 20px 70px rgba(0,0,0,.35);
+
+      overflow: hidden;
     }
+
+    .card::before {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          120deg,
+          rgba(64,224,208,.025),
+          transparent 35%,
+          rgba(255,105,109,.025)
+        );
+    }
+
+    .card-header {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      margin: 0;
+
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .section-icon {
+      color: var(--turquoise);
+      font-size: 22px;
+
+      text-shadow:
+        0 0 14px rgba(64,224,208,.45);
+    }
+
+    /* =========================
+       FORM
+    ========================= */
 
     form {
+      position: relative;
+
       display: grid;
-      gap: 10px;
+      grid-template-columns: 1fr 1fr 1.25fr auto;
+      gap: 12px;
+      align-items: center;
     }
 
-    input, select, button {
+    input,
+    select,
+    button {
       font: inherit;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #d5dae5;
+    }
+
+    input,
+    select {
+      width: 100%;
+
+      padding: 14px 15px;
+
+      color: var(--white);
+      background: #090909;
+
+      border: 1px solid #303030;
+      border-radius: 13px;
+
+      outline: none;
+
+      transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+    }
+
+    input::placeholder {
+      color: #777;
+    }
+
+    input:hover,
+    select:hover {
+      border-color: #444;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--turquoise);
+
+      background: #0b0b0b;
+
+      box-shadow:
+        0 0 0 3px rgba(64,224,208,.08),
+        0 0 25px rgba(64,224,208,.06);
+    }
+
+    select {
+      cursor: pointer;
+      appearance: auto;
+    }
+
+    option {
+      background: #111;
+      color: white;
     }
 
     button {
-      background: #182033;
-      color: white;
+      border: none;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 800;
+
+      transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        opacity .18s ease;
     }
 
     button:hover {
-      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .submit-button {
+      min-height: 48px;
+
+      padding: 13px 20px;
+
+      white-space: nowrap;
+
+      color: #090909;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff696d,
+          #ff4f7a
+        );
+
+      border-radius: 13px;
+
+      box-shadow:
+        0 8px 25px var(--shadow-pink);
+    }
+
+    .submit-button:hover {
+      box-shadow:
+        0 10px 32px rgba(255,105,109,.32);
+    }
+
+    .status {
+      position: relative;
+
+      margin-top: 13px;
+
+      min-height: 20px;
+
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* =========================
+       TOOLBAR
+    ========================= */
+
+    .toolbar {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
+    }
+
+    .sort-select {
+      width: auto;
+      min-width: 170px;
+    }
+
+    /* =========================
+       SONG LIST
+    ========================= */
+
+    #songs {
+      position: relative;
     }
 
     .song {
       display: grid;
-      grid-template-columns: 55px 1fr auto;
-      gap: 15px;
+
+      grid-template-columns: 62px 1fr auto;
+
+      gap: 18px;
       align-items: center;
-      padding: 16px 0;
-      border-top: 1px solid #edf0f5;
+
+      padding: 17px 5px;
+
+      border-top: 1px solid rgba(255,255,255,.075);
+
+      transition:
+        background .2s ease,
+        padding-left .2s ease,
+        padding-right .2s ease;
     }
 
+    .song:first-child {
+      border-top: none;
+    }
+
+    .song:hover {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(64,224,208,.025),
+          rgba(255,105,109,.025)
+        );
+
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    /* =========================
+       VOTING
+    ========================= */
+
     .votes {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      gap: 3px;
     }
 
     .vote {
-      padding: 5px 10px;
-      background: white;
-      color: #182033;
-      border: 1px solid #d5dae5;
+      width: 38px;
+      height: 27px;
+
+      padding: 0;
+
+      color: #aaa;
+
+      background: #0b0b0b;
+
+      border: 1px solid #303030;
+      border-radius: 9px;
+
+      font-size: 13px;
+
+      transition:
+        color .18s ease,
+        border-color .18s ease,
+        background .18s ease,
+        transform .18s ease;
+    }
+
+    .vote:hover {
+      color: var(--turquoise);
+
+      border-color: var(--turquoise);
+
+      background:
+        rgba(64,224,208,.06);
+
+      box-shadow:
+        0 0 14px rgba(64,224,208,.08);
     }
 
     .vote:disabled {
-      opacity: .5;
+      opacity: .45;
+      cursor: wait;
+      transform: none;
     }
 
     .count {
-      font-weight: bold;
-      margin: 4px;
+      min-width: 38px;
+
+      text-align: center;
+
+      color: var(--turquoise);
+
+      font-size: 18px;
+      font-weight: 900;
+
+      text-shadow:
+        0 0 12px rgba(64,224,208,.2);
     }
 
+    /* =========================
+       SONG INFO
+    ========================= */
+
     .title {
-      font-weight: bold;
-      font-size: 18px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+
+      color: var(--white);
+
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.35;
     }
 
     .artist {
-      color: #68738a;
-      margin-top: 3px;
-    }
+      margin-top: 4px;
 
-    .new {
-      background: #e5f7eb;
-      color: #16743a;
-      font-size: 11px;
-      padding: 3px 7px;
-      border-radius: 20px;
-      margin-left: 7px;
-    }
+      color: #858585;
 
-    .listen {
-      color: #2459c5;
-      text-decoration: none;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .status {
-      margin-top: 10px;
-      color: #68738a;
       font-size: 14px;
     }
 
-    .toolbar {
-      display: flex;
-      justify-content: space-between;
+    .new {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
+
+      padding: 3px 8px;
+
+      color: var(--turquoise);
+
+      background:
+        rgba(64,224,208,.07);
+
+      border: 1px solid rgba(64,224,208,.45);
+      border-radius: 999px;
+
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+
+      box-shadow:
+        0 0 12px rgba(64,224,208,.06);
     }
 
+    /* =========================
+       LISTEN BUTTON
+    ========================= */
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .listen {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-width: 118px;
+
+      padding: 9px 15px;
+
+      color: var(--white);
+      text-decoration: none;
+
+      background: #0b0b0b;
+
+      border: 1px solid rgba(255,105,109,.7);
+      border-radius: 999px;
+
+      font-size: 14px;
+      font-weight: 800;
+
+      transition:
+        background .18s ease,
+        color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease;
+    }
+
+    .listen:hover {
+      color: #fff;
+
+      background:
+        rgba(255,105,109,.1);
+
+      box-shadow:
+        0 0 18px rgba(255,105,109,.13);
+
+      transform: translateY(-1px);
+    }
+
+    /* =========================
+       EMPTY STATE
+    ========================= */
+
     .empty {
+      padding: 50px 20px;
+
       text-align: center;
-      color: #68738a;
-      padding: 30px;
+
+      color: #777;
+
+      border-top: 1px solid rgba(255,255,255,.075);
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      padding: 35px 0 10px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 12px;
+      letter-spacing: .12em;
+    }
+
+    footer span {
+      color: var(--pink);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 900px) {
+      form {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .submit-button {
+        grid-column: 1 / -1;
+      }
     }
 
     @media (max-width: 650px) {
-      .song {
-        grid-template-columns: 50px 1fr;
+      .container {
+        width: min(100% - 20px, 600px);
+        padding-top: 22px;
       }
 
-      .actions {
-        grid-column: 2;
+      .hero {
+        padding: 15px 0 25px;
+      }
+
+      .logo {
+        font-size: clamp(4rem, 24vw, 6.5rem);
+      }
+
+      .subtitle {
+        padding: 0 8px;
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 17px;
+        border-radius: 19px;
+      }
+
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      .submit-button {
+        grid-column: auto;
+        width: 100%;
       }
 
       .toolbar {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+      }
+
+      .sort-select {
+        width: 100%;
+      }
+
+      .song {
+        grid-template-columns: 48px 1fr;
+        gap: 12px;
+        padding: 16px 0;
+      }
+
+      .song:hover {
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+
+      .actions {
+        grid-column: 2;
+        justify-content: flex-start;
+        margin-top: -3px;
+      }
+
+      .listen {
+        min-width: 110px;
+      }
+
+      .title {
+        font-size: 16px;
+      }
+
+      .artist {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .logo {
+        font-size: 4rem;
+      }
+
+      .card {
+        padding: 14px;
+      }
+
+      .song {
+        grid-template-columns: 43px 1fr;
+      }
+
+      .vote {
+        width: 34px;
+        height: 26px;
+      }
+
+      .count {
+        min-width: 34px;
       }
     }
   </style>
@@ -156,427 +752,584 @@
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <h1>🎸 BandSong</h1>
-  <p class="subtitle">
-    Songs vorschlagen, abstimmen und gemeinsam auswählen.
-  </p>
+    <!-- =========================
+         HERO
+    ========================= -->
 
-  <div class="card">
+    <header class="hero">
 
-    <form id="songForm">
+      <h1 class="logo">
+        FLY<span>D</span>
+      </h1>
 
-      <input
-        id="title"
-        type="text"
-        placeholder="Songtitel"
-        required
-      >
+      <p class="subtitle">
+        Songs vorschlagen, gemeinsam abstimmen und die nächste
+        Setlist vorbereiten. 🎸
+      </p>
 
-      <input
-        id="artist"
-        type="text"
-        placeholder="Interpret / Band"
-        required
-      >
+    </header>
 
-      <input
-        id="url"
-        type="url"
-        placeholder="Spotify- oder YouTube-Link (optional)"
-      >
 
-      <button type="submit">
-        + Song hinzufügen
-      </button>
+    <!-- =========================
+         SONG HINZUFÜGEN
+    ========================= -->
 
-    </form>
+    <section class="card">
 
-    <div id="status" class="status"></div>
+      <div class="card-header">
+
+        <h2 class="section-title">
+          <span class="section-icon">＋</span>
+          Song hinzufügen
+        </h2>
+
+      </div>
+
+      <form id="songForm">
+
+        <input
+          id="title"
+          type="text"
+          placeholder="Songtitel"
+          autocomplete="off"
+          required
+        >
+
+        <input
+          id="artist"
+          type="text"
+          placeholder="Interpret / Band"
+          autocomplete="off"
+          required
+        >
+
+        <input
+          id="url"
+          type="url"
+          placeholder="Spotify- oder YouTube-Link (optional)"
+          autocomplete="off"
+        >
+
+        <button
+          class="submit-button"
+          type="submit"
+        >
+          ＋ Song hinzufügen
+        </button>
+
+      </form>
+
+      <div
+        id="status"
+        class="status"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================
+         SONG LISTE
+    ========================= -->
+
+    <section class="card">
+
+      <div class="card-header">
+
+        <div class="toolbar" style="width:100%;">
+
+          <h2 class="section-title">
+            <span class="section-icon">♫</span>
+            Songliste
+          </h2>
+
+          <select
+            id="sort"
+            class="sort-select"
+          >
+            <option value="votes">
+              Nach Stimmen
+            </option>
+
+            <option value="new">
+              Neueste zuerst
+            </option>
+
+            <option value="title">
+              Titel A–Z
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+      <div id="songs"></div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+      FLYD <span>·</span> Music. Together.
+    </footer>
 
   </div>
 
 
-  <div class="card">
+  <script>
 
-    <div class="toolbar">
+    /* =========================================================
+       SUPABASE
+    ========================================================= */
 
-      <strong>🎵 Songliste</strong>
+    const SUPABASE_URL =
+      "https://likbfaaucgnxtelesftw.supabase.co";
 
-      <select id="sort">
-        <option value="votes">Nach Stimmen</option>
-        <option value="new">Neueste zuerst</option>
-        <option value="title">Titel A–Z</option>
-      </select>
+    const SUPABASE_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
 
-    </div>
-
-    <div id="songs"></div>
-
-  </div>
-
-</div>
-
-
-<script>
-
-const SUPABASE_URL =
-  "https://likbfaaucgnxtelesftw.supabase.co";
-
-const SUPABASE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
-
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-const form = document.getElementById("songForm");
-const songsElement = document.getElementById("songs");
-const statusElement = document.getElementById("status");
-const sortElement = document.getElementById("sort");
-
-let songs = [];
-
-
-function escapeHTML(value) {
-
-  return String(value ?? "").replace(
-    /[&<>"']/g,
-    character => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[character])
-  );
-
-}
-
-
-function isNew(createdAt) {
-
-  return (
-    Date.now() -
-    new Date(createdAt).getTime()
-  ) < 7 * 24 * 60 * 60 * 1000;
-
-}
-
-
-function renderSongs() {
-
-  let list = [...songs];
-
-
-  if (sortElement.value === "new") {
-
-    list.sort(
-      (a,b) =>
-        new Date(b.created_at) -
-        new Date(a.created_at)
-    );
-
-  }
-
-
-  else if (sortElement.value === "title") {
-
-    list.sort(
-      (a,b) =>
-        a.title.localeCompare(b.title, "de")
-    );
-
-  }
-
-
-  else {
-
-    list.sort(
-      (a,b) =>
-        (b.votes || 0) -
-        (a.votes || 0)
-    );
-
-  }
-
-
-  if (list.length === 0) {
-
-    songsElement.innerHTML =
-      `<div class="empty">
-        Noch keine Songs vorhanden 🎶
-      </div>`;
-
-    return;
-
-  }
-
-
-  songsElement.innerHTML = list.map(song => `
-
-    <div class="song">
-
-      <div class="votes">
-
-        <button
-          class="vote"
-          data-id="${escapeHTML(song.id)}"
-          data-vote="1"
-        >
-          ▲
-        </button>
-
-        <div class="count">
-          ${song.votes || 0}
-        </div>
-
-        <button
-          class="vote"
-          data-id="${escapeHTML(song.id)}"
-          data-vote="-1"
-        >
-          ▼
-        </button>
-
-      </div>
-
-
-      <div>
-
-        <div class="title">
-
-          ${escapeHTML(song.title)}
-
-          ${
-            isNew(song.created_at)
-              ? `<span class="new">Neu</span>`
-              : ""
-          }
-
-        </div>
-
-        <div class="artist">
-          ${escapeHTML(song.artist)}
-        </div>
-
-      </div>
-
-
-      <div class="actions">
-
-        ${
-          song.url
-            ? `
-              <a
-                class="listen"
-                href="${escapeHTML(song.url)}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ▶ Anhören
-              </a>
-            `
-            : ""
-        }
-
-      </div>
-
-    </div>
-
-  `).join("");
-
-}
-
-
-async function loadSongs() {
-
-  const { data, error } =
-    await db
-      .from("songs")
-      .select(
-        "id,title,artist,url,votes,created_at"
-      );
-
-  if (error) {
-
-    console.error(error);
-
-    statusElement.textContent = "❌ " + error.message + " (" + error.code + ")";
-
-    return;
-
-  }
-
-
-  songs = data || [];
-
-  statusElement.textContent = "";
-
-  renderSongs();
-
-}
-
-
-form.addEventListener("submit", async event => {
-
-  event.preventDefault();
-
-
-  const title =
-    document.getElementById("title")
-      .value.trim();
-
-  const artist =
-    document.getElementById("artist")
-      .value.trim();
-
-  const url =
-    document.getElementById("url")
-      .value.trim();
-
-
-  if (!title || !artist) return;
-
-
-  statusElement.textContent =
-    "Song wird hinzugefügt…";
-
-
-  const { error } =
-    await db
-      .from("songs")
-      .insert({
-
-        title: title,
-        artist: artist,
-        url: url || null,
-        votes: 0
-
-      });
-
-
-  if (error) {
-
-    console.error(error);
-
-    statusElement.textContent =
-      "❌ Song konnte nicht hinzugefügt werden.";
-
-    return;
-
-  }
-
-
-  form.reset();
-
-  statusElement.textContent =
-    "✅ Song hinzugefügt!";
-
-  await loadSongs();
-
-
-  setTimeout(() => {
-
-    statusElement.textContent = "";
-
-  }, 2000);
-
-});
-
-
-songsElement.addEventListener(
-  "click",
-  async event => {
-
-    const button =
-      event.target.closest("[data-vote]");
-
-    if (!button) return;
-
-
-    const id = button.dataset.id;
-
-    const change =
-      Number(button.dataset.vote);
-
-
-    const song =
-      songs.find(item => item.id === id);
-
-    if (!song) return;
-
-
-    button.disabled = true;
-
-
-    const newVotes =
-      Math.max(
-        0,
-        (song.votes || 0) + change
+    const db =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
       );
 
 
-    const { error } =
-      await db
-        .from("songs")
-        .update({
-          votes: newVotes
-        })
-        .eq("id", id);
+    /* =========================================================
+       ELEMENTE
+    ========================================================= */
+
+    const form =
+      document.getElementById("songForm");
+
+    const songsElement =
+      document.getElementById("songs");
+
+    const statusElement =
+      document.getElementById("status");
+
+    const sortElement =
+      document.getElementById("sort");
+
+    let songs = [];
 
 
-    button.disabled = false;
+    /* =========================================================
+       HTML SICHER MACHEN
+    ========================================================= */
 
+    function escapeHTML(value) {
 
-    if (error) {
+      return String(value ?? "").replace(
+        /[&<>"']/g,
 
-      console.error(error);
-
-      statusElement.textContent =
-        "❌ Abstimmung fehlgeschlagen.";
-
-      return;
+        character => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[character])
+      );
 
     }
 
 
-    await loadSongs();
+    /* =========================================================
+       NEU?
+    ========================================================= */
 
-  }
-);
+    function isNew(createdAt) {
 
+      return (
+        Date.now() -
+        new Date(createdAt).getTime()
+      ) < 7 * 24 * 60 * 60 * 1000;
 
-sortElement.addEventListener(
-  "change",
-  renderSongs
-);
-
-
-// Automatische Aktualisierung,
-// wenn jemand anderes einen Song hinzufügt
-// oder Stimmen verändert.
-
-db
-  .channel("songs-live")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "songs"
-    },
-    () => loadSongs()
-  )
-  .subscribe();
+    }
 
 
-loadSongs();
+    /* =========================================================
+       SONGS DARSTELLEN
+    ========================================================= */
 
-</script>
+    function renderSongs() {
+
+      let list = [...songs];
+
+
+      /* SORTIERUNG */
+
+      if (sortElement.value === "new") {
+
+        list.sort(
+          (a, b) =>
+            new Date(b.created_at) -
+            new Date(a.created_at)
+        );
+
+      } else if (sortElement.value === "title") {
+
+        list.sort(
+          (a, b) =>
+            a.title.localeCompare(
+              b.title,
+              "de"
+            )
+        );
+
+      } else {
+
+        list.sort(
+          (a, b) =>
+            (b.votes || 0) -
+            (a.votes || 0)
+        );
+
+      }
+
+
+      /* KEINE SONGS */
+
+      if (list.length === 0) {
+
+        songsElement.innerHTML =
+          `
+            <div class="empty">
+              Noch keine Songs vorhanden 🎶
+            </div>
+          `;
+
+        return;
+      }
+
+
+      /* SONGS */
+
+      songsElement.innerHTML =
+        list.map(song => `
+
+          <div class="song">
+
+            <div class="votes">
+
+              <button
+                class="vote"
+                data-id="${escapeHTML(song.id)}"
+                data-vote="1"
+                aria-label="Für Song stimmen"
+              >
+                ▲
+              </button>
+
+              <div class="count">
+                ${song.votes || 0}
+              </div>
+
+              <button
+                class="vote"
+                data-id="${escapeHTML(song.id)}"
+                data-vote="-1"
+                aria-label="Gegen Song stimmen"
+              >
+                ▼
+              </button>
+
+            </div>
+
+
+            <div>
+
+              <div class="title">
+
+                ${escapeHTML(song.title)}
+
+                ${
+                  isNew(song.created_at)
+                    ? `
+                      <span class="new">
+                        Neu
+                      </span>
+                    `
+                    : ""
+                }
+
+              </div>
+
+              <div class="artist">
+                ${escapeHTML(song.artist)}
+              </div>
+
+            </div>
+
+
+            <div class="actions">
+
+              ${
+                song.url
+                  ? `
+                    <a
+                      class="listen"
+                      href="${escapeHTML(song.url)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      ▶&nbsp; Anhören
+                    </a>
+                  `
+                  : ""
+              }
+
+            </div>
+
+          </div>
+
+        `).join("");
+
+    }
+
+
+    /* =========================================================
+       SONGS LADEN
+    ========================================================= */
+
+    async function loadSongs() {
+
+      const { data, error } =
+        await db
+          .from("songs")
+          .select(
+            "id,title,artist,url,votes,created_at"
+          );
+
+
+      if (error) {
+
+        console.error(error);
+
+        statusElement.textContent =
+          "❌ " +
+          error.message +
+          " (" +
+          error.code +
+          ")";
+
+        return;
+      }
+
+
+      songs = data || [];
+
+      statusElement.textContent = "";
+
+      renderSongs();
+
+    }
+
+
+    /* =========================================================
+       SONG HINZUFÜGEN
+    ========================================================= */
+
+    form.addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+
+        const title =
+          document
+            .getElementById("title")
+            .value
+            .trim();
+
+
+        const artist =
+          document
+            .getElementById("artist")
+            .value
+            .trim();
+
+
+        const url =
+          document
+            .getElementById("url")
+            .value
+            .trim();
+
+
+        if (!title || !artist) {
+          return;
+        }
+
+
+        statusElement.textContent =
+          "Song wird hinzugefügt…";
+
+
+        const { error } =
+          await db
+            .from("songs")
+            .insert({
+              title: title,
+              artist: artist,
+              url: url || null,
+              votes: 0
+            });
+
+
+        if (error) {
+
+          console.error(error);
+
+          statusElement.textContent =
+            "❌ Song konnte nicht hinzugefügt werden.";
+
+          return;
+        }
+
+
+        form.reset();
+
+
+        statusElement.textContent =
+          "✅ Song hinzugefügt!";
+
+
+        await loadSongs();
+
+
+        setTimeout(() => {
+
+          statusElement.textContent = "";
+
+        }, 2000);
+
+      }
+    );
+
+
+    /* =========================================================
+       VOTING
+    ========================================================= */
+
+    songsElement.addEventListener(
+      "click",
+      async event => {
+
+        const button =
+          event.target.closest(
+            "[data-vote]"
+          );
+
+
+        if (!button) {
+          return;
+        }
+
+
+        const id =
+          button.dataset.id;
+
+
+        const change =
+          Number(button.dataset.vote);
+
+
+        const song =
+          songs.find(
+            item => item.id === id
+          );
+
+
+        if (!song) {
+          return;
+        }
+
+
+        button.disabled = true;
+
+
+        const newVotes =
+          Math.max(
+            0,
+            (song.votes || 0) + change
+          );
+
+
+        const { error } =
+          await db
+            .from("songs")
+            .update({
+              votes: newVotes
+            })
+            .eq("id", id);
+
+
+        button.disabled = false;
+
+
+        if (error) {
+
+          console.error(error);
+
+          statusElement.textContent =
+            "❌ Abstimmung fehlgeschlagen.";
+
+          return;
+        }
+
+
+        await loadSongs();
+
+      }
+    );
+
+
+    /* =========================================================
+       SORTIERUNG
+    ========================================================= */
+
+    sortElement.addEventListener(
+      "change",
+      renderSongs
+    );
+
+
+    /* =========================================================
+       SUPABASE REALTIME
+    ========================================================= */
+
+    db
+      .channel("songs-live")
+
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "songs"
+        },
+
+        () => loadSongs()
+      )
+
+      .subscribe();
+
+
+    /* =========================================================
+       START
+    ========================================================= */
+
+    loadSongs();
+
+  </script>
 
 </body>
 </html>
