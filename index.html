@@ -405,8 +405,7 @@ async function loadSongs() {
 
     console.error(error);
 
-    statusElement.textContent =
-      "❌ Verbindung zu Supabase fehlgeschlagen.";
+    statusElement.textContent = "❌ " + error.message + " (" + error.code + ")";
 
     return;
 
