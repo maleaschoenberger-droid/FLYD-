@@ -14,14 +14,12 @@
     :root {
       --black: #030607;
       --black-2: #070b0d;
-      --card: rgba(7, 13, 16, 0.92);
+      --card: rgba(7, 13, 16, 0.94);
       --white: #f5f7f7;
       --muted: #8d9ba1;
       --cyan: #40e0d0;
-      --cyan-dark: #0e7472;
       --pink: #ff2d73;
       --pink-light: #ff527f;
-      --border: rgba(64, 224, 208, 0.35);
     }
 
     html {
@@ -31,30 +29,10 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(
-          circle at 5% 13%,
-          rgba(0, 240, 225, 0.20),
-          transparent 22%
-        ),
-        radial-gradient(
-          circle at 96% 15%,
-          rgba(255, 0, 92, 0.20),
-          transparent 22%
-        ),
-        radial-gradient(
-          circle at 2% 96%,
-          rgba(0, 220, 210, 0.13),
-          transparent 20%
-        ),
-        radial-gradient(
-          circle at 98% 96%,
-          rgba(255, 0, 95, 0.15),
-          transparent 20%
-        ),
-        #030607;
+      overflow-x: hidden;
 
       color: var(--white);
+
       font-family:
         Inter,
         -apple-system,
@@ -64,7 +42,28 @@
         Arial,
         sans-serif;
 
-      overflow-x: hidden;
+      background:
+        radial-gradient(
+          circle at 4% 12%,
+          rgba(64, 224, 208, 0.18),
+          transparent 23%
+        ),
+        radial-gradient(
+          circle at 96% 13%,
+          rgba(255, 45, 115, 0.18),
+          transparent 23%
+        ),
+        radial-gradient(
+          circle at 5% 94%,
+          rgba(64, 224, 208, 0.11),
+          transparent 21%
+        ),
+        radial-gradient(
+          circle at 96% 94%,
+          rgba(255, 45, 115, 0.10),
+          transparent 21%
+        ),
+        #030607;
     }
 
     body::before {
@@ -77,17 +76,17 @@
         linear-gradient(
           115deg,
           transparent 0 48%,
-          rgba(64, 224, 208, 0.018) 49%,
+          rgba(64, 224, 208, 0.015) 49%,
           transparent 50%
         );
 
-      opacity: 0.5;
+      opacity: 0.7;
     }
 
     .page {
       width: min(1160px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 30px 0 28px;
+      padding: 30px 0;
     }
 
     /* =========================
@@ -96,58 +95,61 @@
 
     header {
       position: relative;
+      padding: 5px 0 28px;
       text-align: center;
-      padding: 12px 0 24px;
     }
 
     .menu {
       position: absolute;
-      right: 0;
-      top: 8px;
+      top: 7px;
+      right: 2px;
 
       color: var(--cyan);
-      font-size: 28px;
-      line-height: 1;
+      font-size: 26px;
 
       text-shadow:
-        0 0 8px rgba(64, 224, 208, 0.8),
-        0 0 22px rgba(64, 224, 208, 0.35);
-
-      opacity: 0.95;
+        0 0 10px rgba(64, 224, 208, 0.7),
+        0 0 25px rgba(64, 224, 208, 0.25);
     }
-
-    /*
-      FLYD LOGO
-      Direkt als SVG eingebaut.
-      Dadurch brauchst du keine zusätzliche Logo-Datei.
-    */
 
     .logo-wrap {
       display: flex;
       justify-content: center;
       align-items: center;
+
       width: 100%;
       margin: 0 auto 8px;
     }
 
+    /*
+      DAS ECHTE GENERIERTE FLYD-LOGO
+
+      Wichtig:
+      flyd-logo.png muss im selben Ordner wie index.html liegen.
+    */
+
     .flyd-logo {
-      width: min(610px, 82vw);
+      display: block;
+
+      width: min(650px, 88vw);
       height: auto;
-      overflow: visible;
+
+      object-fit: contain;
 
       filter:
-        drop-shadow(0 0 10px rgba(64, 224, 208, 0.22))
-        drop-shadow(0 0 18px rgba(255, 45, 115, 0.15));
+        drop-shadow(0 0 10px rgba(64, 224, 208, 0.18))
+        drop-shadow(0 0 18px rgba(255, 45, 115, 0.14));
     }
 
     .subtitle {
-      margin: 3px auto 0;
       max-width: 800px;
+      margin: 5px auto 0;
+      padding: 0 12px;
 
-      color: #e2e6e7;
+      color: #dfe5e6;
+
       font-size: 17px;
       line-height: 1.5;
-      letter-spacing: 0.15px;
     }
 
     /* =========================
@@ -157,21 +159,21 @@
     .card {
       position: relative;
 
+      overflow: hidden;
+
       background:
         linear-gradient(
           145deg,
-          rgba(12, 20, 23, 0.96),
-          rgba(4, 9, 11, 0.96)
+          rgba(12, 20, 23, 0.97),
+          rgba(4, 9, 11, 0.97)
         );
 
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
 
       box-shadow:
-        0 15px 60px rgba(0, 0, 0, 0.45),
+        0 18px 60px rgba(0, 0, 0, 0.45),
         inset 0 1px 0 rgba(255, 255, 255, 0.025);
-
-      overflow: hidden;
     }
 
     .card::before {
@@ -183,10 +185,10 @@
       background:
         linear-gradient(
           90deg,
-          rgba(64, 224, 208, 0.07),
+          rgba(64, 224, 208, 0.06),
           transparent 25%,
           transparent 75%,
-          rgba(255, 45, 115, 0.07)
+          rgba(255, 45, 115, 0.06)
         );
     }
 
@@ -195,23 +197,25 @@
     ========================= */
 
     .add-card {
-      padding: 25px 30px 28px;
       margin-bottom: 24px;
+      padding: 25px 30px 27px;
 
-      border-color: rgba(64, 224, 208, 0.38);
+      border-color: rgba(64, 224, 208, 0.36);
 
       box-shadow:
-        0 0 35px rgba(64, 224, 208, 0.07),
-        0 0 35px rgba(255, 45, 115, 0.04),
-        inset 0 1px 0 rgba(255,255,255,0.03);
+        0 0 35px rgba(64, 224, 208, 0.06),
+        0 0 35px rgba(255, 45, 115, 0.035),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
     }
 
     .add-card::after {
       content: "";
+
       position: absolute;
+      bottom: 0;
       left: 0;
       right: 0;
-      bottom: 0;
+
       height: 1px;
 
       background:
@@ -224,7 +228,7 @@
           transparent
         );
 
-      opacity: 0.55;
+      opacity: 0.6;
     }
 
     .section-title {
@@ -245,27 +249,28 @@
 
     .plus {
       display: inline-flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
 
       width: 38px;
       height: 38px;
 
+      border: 1px solid rgba(64, 224, 208, 0.25);
       border-radius: 50%;
 
-      background: rgba(64, 224, 208, 0.10);
-      border: 1px solid rgba(64, 224, 208, 0.18);
-
       color: white;
-      font-size: 28px;
+      background: rgba(64, 224, 208, 0.08);
+
+      font-size: 27px;
       font-weight: 300;
 
       box-shadow:
-        0 0 18px rgba(64, 224, 208, 0.13);
+        0 0 18px rgba(64, 224, 208, 0.10);
     }
 
     .section-title::after {
       content: "";
+
       width: 3px;
       height: 22px;
 
@@ -281,6 +286,7 @@
 
       display: grid;
       grid-template-columns: 1fr 1fr 1.12fr auto;
+
       gap: 14px;
       align-items: center;
     }
@@ -291,8 +297,9 @@
 
     .input-icon {
       position: absolute;
-      left: 15px;
       top: 50%;
+      left: 15px;
+
       transform: translateY(-50%);
 
       color: var(--cyan);
@@ -307,15 +314,13 @@
 
       padding: 0 15px 0 45px;
 
+      outline: none;
+
       border: 1px solid rgba(100, 145, 155, 0.52);
       border-radius: 9px;
 
-      outline: none;
-
-      background:
-        rgba(2, 7, 9, 0.9);
-
       color: white;
+      background: rgba(2, 7, 9, 0.9);
 
       font-size: 14px;
 
@@ -336,7 +341,7 @@
 
       box-shadow:
         0 0 0 2px rgba(64, 224, 208, 0.08),
-        0 0 18px rgba(64, 224, 208, 0.09);
+        0 0 18px rgba(64, 224, 208, 0.08);
     }
 
     .add-button {
@@ -347,14 +352,14 @@
       border: 0;
       border-radius: 999px;
 
+      color: #18050c;
+
       background:
         linear-gradient(
           135deg,
-          #ff2d73,
-          #ff477f
+          var(--pink),
+          var(--pink-light)
         );
-
-      color: #16050c;
 
       font-size: 13px;
       font-weight: 900;
@@ -368,8 +373,7 @@
 
       transition:
         transform 0.15s ease,
-        box-shadow 0.15s ease,
-        filter 0.15s ease;
+        box-shadow 0.15s ease;
     }
 
     .add-button:hover {
@@ -384,20 +388,17 @@
     }
 
     .add-button:disabled {
-      opacity: 0.6;
+      opacity: 0.55;
       cursor: wait;
       transform: none;
     }
 
-    /* =========================
-       STATUS
-    ========================= */
-
     #status {
       min-height: 20px;
-      margin: 11px 0 0;
+      margin-top: 11px;
 
       color: var(--cyan);
+
       font-size: 13px;
       text-align: center;
     }
@@ -407,10 +408,8 @@
     ========================= */
 
     .list-card {
-      padding: 20px 0 5px;
       margin-bottom: 20px;
-
-      border-color: rgba(255, 255, 255, 0.10);
+      padding: 20px 0 5px;
     }
 
     .list-header {
@@ -446,18 +445,18 @@
     }
 
     select {
-      height: 42px;
       min-width: 205px;
+      height: 42px;
 
       padding: 0 38px 0 17px;
 
-      color: white;
-      background: #071013;
+      outline: none;
 
       border: 1px solid var(--cyan);
       border-radius: 999px;
 
-      outline: none;
+      color: white;
+      background: #071013;
 
       font-size: 13px;
 
@@ -488,9 +487,7 @@
 
       border-bottom: 1px solid rgba(255, 255, 255, 0.075);
 
-      transition:
-        background 0.15s ease,
-        transform 0.15s ease;
+      transition: background 0.15s ease;
     }
 
     .song:last-child {
@@ -528,12 +525,11 @@
 
       padding: 0;
 
-      background: transparent;
-
       border: 1px solid rgba(64, 224, 208, 0.75);
       border-radius: 999px;
 
       color: white;
+      background: transparent;
 
       font-size: 12px;
 
@@ -547,9 +543,8 @@
     }
 
     .vote:hover {
-      background: rgba(64, 224, 208, 0.13);
-
       color: var(--cyan);
+      background: rgba(64, 224, 208, 0.13);
 
       box-shadow:
         0 0 12px rgba(64, 224, 208, 0.16);
@@ -609,6 +604,7 @@
       align-items: center;
 
       height: 22px;
+
       padding: 0 8px;
 
       border: 1px solid var(--cyan);
@@ -631,9 +627,9 @@
 
     .listen {
       display: inline-flex;
-      justify-content: center;
       align-items: center;
-      gap: 9px;
+      justify-content: center;
+      gap: 8px;
 
       min-width: 126px;
       height: 38px;
@@ -648,16 +644,13 @@
 
       font-size: 13px;
       font-weight: 600;
+
       text-decoration: none;
 
       transition:
         background 0.15s ease,
         box-shadow 0.15s ease,
         transform 0.15s ease;
-    }
-
-    .listen::first-letter {
-      color: var(--pink);
     }
 
     .listen:hover {
@@ -674,8 +667,8 @@
 
       color: #849196;
 
-      text-align: center;
       font-size: 15px;
+      text-align: center;
     }
 
     /* =========================
@@ -694,10 +687,11 @@
     }
 
     /* =========================
-       RESPONSIVE
+       TABLET
     ========================= */
 
     @media (max-width: 900px) {
+
       .form-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -715,7 +709,12 @@
       }
     }
 
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media (max-width: 700px) {
+
       .page {
         width: min(100% - 20px, 600px);
         padding-top: 18px;
@@ -726,18 +725,17 @@
       }
 
       .menu {
-        right: 3px;
         top: 0;
-        font-size: 24px;
+        right: 2px;
+
+        font-size: 23px;
       }
 
       .flyd-logo {
-        width: min(470px, 90vw);
+        width: min(500px, 92vw);
       }
 
       .subtitle {
-        padding: 0 12px;
-
         font-size: 14px;
         line-height: 1.45;
       }
@@ -749,7 +747,6 @@
 
       .section-title {
         margin-bottom: 16px;
-
         font-size: 14px;
       }
 
@@ -772,11 +769,12 @@
       }
 
       .list-header {
-        padding: 14px 16px;
-
-        gap: 12px;
         flex-direction: column;
         align-items: stretch;
+
+        gap: 12px;
+
+        padding: 14px 16px;
       }
 
       .list-title {
@@ -789,11 +787,12 @@
 
       .song {
         grid-template-columns: 84px minmax(0, 1fr);
+
         gap: 10px;
 
-        padding: 12px 13px;
-
         min-height: 82px;
+
+        padding: 12px 13px;
       }
 
       .vote-area {
@@ -820,6 +819,7 @@
 
       .actions {
         grid-column: 2;
+
         justify-content: flex-start;
 
         margin-top: 2px;
@@ -838,18 +838,16 @@
     }
 
     @media (max-width: 390px) {
+
       .page {
         width: calc(100% - 14px);
       }
 
       .song {
         grid-template-columns: 76px minmax(0, 1fr);
+
         padding-left: 8px;
         padding-right: 8px;
-      }
-
-      .vote-buttons {
-        gap: 4px;
       }
 
       .vote {
@@ -863,6 +861,7 @@
   </style>
 </head>
 
+
 <body>
 
   <div class="page">
@@ -873,248 +872,23 @@
 
     <header>
 
-      <div class="menu" aria-hidden="true">☰</div>
+      <div class="menu" aria-hidden="true">
+        ☰
+      </div>
 
       <div class="logo-wrap">
 
         <!--
-          FLYD LOGO
-          Direkt eingebettetes SVG – keine zusätzliche Datei nötig.
+          DEIN ECHTES GENERIERTES LOGO
+
+          flyd-logo.png muss neben index.html liegen.
         -->
-        <svg
+
+        <img
           class="flyd-logo"
-          viewBox="0 0 900 300"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-label="FLYD"
+          src="flyd-logo.png"
+          alt="FLYD"
         >
-
-          <defs>
-
-            <linearGradient
-              id="cyanGlow"
-              x1="0"
-              y1="0"
-              x2="1"
-              y2="1"
-            >
-              <stop offset="0" stop-color="#40e0d0"/>
-              <stop offset="1" stop-color="#00a9a1"/>
-            </linearGradient>
-
-            <linearGradient
-              id="pinkGlow"
-              x1="0"
-              y1="0"
-              x2="1"
-              y2="1"
-            >
-              <stop offset="0" stop-color="#ff6b99"/>
-              <stop offset="0.5" stop-color="#ff2d73"/>
-              <stop offset="1" stop-color="#d90052"/>
-            </linearGradient>
-
-            <filter
-              id="logoGlow"
-              x="-30%"
-              y="-30%"
-              width="160%"
-              height="160%"
-            >
-              <feGaussianBlur
-                stdDeviation="5"
-                result="blur"
-              />
-
-              <feMerge>
-                <feMergeNode in="blur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-
-          </defs>
-
-          <!-- cyan paint strokes -->
-
-          <path
-            d="
-              M80 190
-              L135 78
-              L245 43
-              L217 68
-              L155 88
-              L128 137
-              L207 112
-              L188 145
-              L114 169
-              L96 213
-              Z
-            "
-            fill="#ffffff"
-            stroke="url(#cyanGlow)"
-            stroke-width="4"
-            filter="url(#logoGlow)"
-          />
-
-          <!-- F -->
-
-          <path
-            d="
-              M94 194
-              L143 69
-              L267 36
-              L244 68
-              L177 84
-              L164 119
-              L235 101
-              L215 133
-              L151 149
-              L134 207
-              Z
-            "
-            fill="#f8fbfb"
-            stroke="#40e0d0"
-            stroke-width="2"
-          />
-
-          <!-- L -->
-
-          <path
-            d="
-              M285 49
-              L337 37
-              L300 185
-              L392 158
-              L371 196
-              L245 224
-              Z
-            "
-            fill="#f8fbfb"
-            stroke="#40e0d0"
-            stroke-width="2"
-          />
-
-          <!-- Y -->
-
-          <path
-            d="
-              M385 31
-              L439 20
-              L472 91
-              L526 10
-              L580 4
-              L490 128
-              L469 210
-              L414 222
-              L437 132
-              Z
-            "
-            fill="#f8fbfb"
-            stroke="#40e0d0"
-            stroke-width="2"
-          />
-
-          <!-- D -->
-
-          <path
-            d="
-              M560 16
-              L651 1
-              C736 -13 804 31 800 105
-              C796 180 728 225 627 235
-              L540 244
-              L570 159
-              L600 57
-              Z
-
-              M638 63
-              L620 174
-              C667 169 711 145 718 99
-              C725 57 693 49 638 63
-              Z
-            "
-            fill="url(#pinkGlow)"
-            fill-rule="evenodd"
-            stroke="#ff2d73"
-            stroke-width="3"
-            filter="url(#logoGlow)"
-          />
-
-          <!-- cyan paint streaks -->
-
-          <path
-            d="M55 204 L170 177"
-            stroke="#40e0d0"
-            stroke-width="7"
-            stroke-linecap="round"
-            opacity="0.8"
-          />
-
-          <path
-            d="M72 220 L198 191"
-            stroke="#40e0d0"
-            stroke-width="3"
-            stroke-linecap="round"
-            opacity="0.55"
-          />
-
-          <path
-            d="M365 231 L463 205"
-            stroke="#40e0d0"
-            stroke-width="5"
-            stroke-linecap="round"
-            opacity="0.65"
-          />
-
-          <!-- pink paint streaks -->
-
-          <path
-            d="M645 241 L828 170"
-            stroke="#ff2d73"
-            stroke-width="6"
-            stroke-linecap="round"
-            opacity="0.7"
-          />
-
-          <path
-            d="M681 257 L850 194"
-            stroke="#ff2d73"
-            stroke-width="3"
-            stroke-linecap="round"
-            opacity="0.5"
-          />
-
-          <!-- paint splatters -->
-
-          <circle
-            cx="226"
-            cy="39"
-            r="5"
-            fill="#40e0d0"
-          />
-
-          <circle
-            cx="248"
-            cy="25"
-            r="3"
-            fill="#40e0d0"
-          />
-
-          <circle
-            cx="810"
-            cy="151"
-            r="5"
-            fill="#ff2d73"
-          />
-
-          <circle
-            cx="838"
-            cy="138"
-            r="3"
-            fill="#ff2d73"
-          />
-
-        </svg>
 
       </div>
 
@@ -1132,9 +906,17 @@
     <section class="card add-card">
 
       <div class="section-title">
-        <span class="plus">+</span>
-        <span>Song hinzufügen</span>
+
+        <span class="plus">
+          +
+        </span>
+
+        <span>
+          Song hinzufügen
+        </span>
+
       </div>
+
 
       <form id="songForm">
 
@@ -1142,13 +924,15 @@
 
           <div class="input-wrap">
 
-            <span class="input-icon">♫</span>
+            <span class="input-icon">
+              ♫
+            </span>
 
             <input
               id="title"
               type="text"
-              placeholder="Songtitel"
               maxlength="120"
+              placeholder="Songtitel"
               required
             >
 
@@ -1157,13 +941,15 @@
 
           <div class="input-wrap">
 
-            <span class="input-icon">♙</span>
+            <span class="input-icon">
+              ♙
+            </span>
 
             <input
               id="artist"
               type="text"
-              placeholder="Interpret / Band"
               maxlength="120"
+              placeholder="Interpret / Band"
               required
             >
 
@@ -1172,7 +958,9 @@
 
           <div class="input-wrap">
 
-            <span class="input-icon">↗</span>
+            <span class="input-icon">
+              ↗
+            </span>
 
             <input
               id="url"
@@ -1195,6 +983,7 @@
 
       </form>
 
+
       <div id="status"></div>
 
     </section>
@@ -1210,9 +999,13 @@
 
         <div class="list-title">
 
-          <span class="music-icon">♫</span>
+          <span class="music-icon">
+            ♫
+          </span>
 
-          <span>Songliste</span>
+          <span>
+            Songliste
+          </span>
 
         </div>
 
@@ -1256,7 +1049,7 @@
 
   <!-- =========================
        SUPABASE
-  ========================== -->
+    ========================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1265,19 +1058,15 @@
 
     /*
     ============================================================
-    SUPABASE
+    SUPABASE KONFIGURATION
     ============================================================
-
-    WICHTIG:
-    Das hier ist der öffentliche ANON/PUBLISHABLE KEY.
-    Niemals den service_role Key hier eintragen.
     */
 
     const SUPABASE_URL =
       "https://likbfaaucgnxtelesftw.supabase.co";
 
     const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmF1c2UiLCJyZWYiOiJsaWtiZmFhdWNnbnh0ZWxlc2Z0dyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg5ODA0NjIzLCJleHAiOjIxMDUzODA2MjN9.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
 
 
     const db =
@@ -1314,7 +1103,7 @@
 
     /*
     ============================================================
-    SICHERE HTML-AUSGABE
+    HTML SICHER AUSGEBEN
     ============================================================
     */
 
@@ -1337,7 +1126,7 @@
 
     /*
     ============================================================
-    NEU?
+    NEUER SONG?
     ============================================================
     */
 
@@ -1346,14 +1135,12 @@
       const created =
         new Date(createdAt).getTime();
 
-      const now =
-        Date.now();
-
       const sevenDays =
         7 * 24 * 60 * 60 * 1000;
 
       return (
-        now - created < sevenDays
+        Date.now() - created <
+        sevenDays
       );
 
     }
@@ -1367,14 +1154,13 @@
 
     function getSortedSongs() {
 
-      const list = [...songs];
+      const list =
+        [...songs];
+
 
       /*
         STANDARD:
-        Neue Songs zuerst.
-
-        Wenn zwei Songs ungefähr gleich neu sind,
-        kommt der mit mehr Stimmen zuerst.
+        NEUESTE SONGS ZUERST
       */
 
       if (sortElement.value === "new") {
@@ -1400,7 +1186,7 @@
 
 
       /*
-        NACH STIMMEN
+        MEISTE STIMMEN
       */
 
       else if (
@@ -1428,19 +1214,25 @@
 
 
       /*
-        NACH TITEL
+        ALPHABETISCH
       */
 
       else if (
         sortElement.value === "title"
       ) {
 
-        list.sort((a, b) =>
-          String(a.title || "").localeCompare(
-            String(b.title || ""),
+        list.sort((a, b) => {
+
+          return String(
+            a.title || ""
+          ).localeCompare(
+            String(
+              b.title || ""
+            ),
             "de"
-          )
-        );
+          );
+
+        });
 
       }
 
@@ -1478,6 +1270,9 @@
       songsElement.innerHTML =
         list.map(song => {
 
+          const id =
+            escapeHTML(song.id);
+
           const title =
             escapeHTML(song.title);
 
@@ -1486,9 +1281,6 @@
 
           const url =
             escapeHTML(song.url);
-
-          const id =
-            escapeHTML(song.id);
 
           const votes =
             Number(song.votes || 0);
@@ -1500,7 +1292,7 @@
               : "";
 
 
-          const listenButton =
+          const listen =
             song.url
               ? `
                 <a
@@ -1528,7 +1320,7 @@
                     type="button"
                     data-id="${id}"
                     data-vote="1"
-                    aria-label="Hochvoten"
+                    aria-label="Song hochvoten"
                   >
                     ▲
                   </button>
@@ -1538,7 +1330,7 @@
                     type="button"
                     data-id="${id}"
                     data-vote="-1"
-                    aria-label="Runtervoten"
+                    aria-label="Song runtervoten"
                   >
                     ▼
                   </button>
@@ -1571,7 +1363,7 @@
 
               <div class="actions">
 
-                ${listenButton}
+                ${listen}
 
               </div>
 
@@ -1586,7 +1378,7 @@
 
     /*
     ============================================================
-    SONGS LADEN
+    SONGS AUS SUPABASE LADEN
     ============================================================
     */
 
@@ -1630,8 +1422,10 @@
       songs =
         data || [];
 
+
       statusElement.textContent =
         "";
+
 
       renderSongs();
 
@@ -1800,15 +1594,11 @@
           true;
 
 
-        /*
-          Votes können nicht unter 0 gehen.
-        */
-
         const newVotes =
           Math.max(
             0,
             Number(song.votes || 0) +
-              change
+            change
           );
 
 
@@ -1865,7 +1655,7 @@
 
     /*
     ============================================================
-    REALTIME
+    SUPABASE REALTIME
     ============================================================
     */
 
@@ -1882,7 +1672,9 @@
         },
 
         () => {
+
           loadSongs();
+
         }
 
       )
