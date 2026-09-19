@@ -13,7 +13,6 @@
 
     :root {
       --black: #030607;
-      --black-2: #070b0d;
       --card: rgba(7, 13, 16, 0.94);
       --white: #f5f7f7;
       --muted: #8d9ba1;
@@ -151,7 +150,6 @@
 
     .card {
       position: relative;
-
       overflow: hidden;
 
       background:
@@ -256,9 +254,6 @@
 
       font-size: 27px;
       font-weight: 300;
-
-      box-shadow:
-        0 0 18px rgba(64, 224, 208, 0.10);
     }
 
     .section-title::after {
@@ -316,11 +311,6 @@
       background: rgba(2, 7, 9, 0.9);
 
       font-size: 14px;
-
-      transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease,
-        background 0.18s ease;
     }
 
     input::placeholder {
@@ -363,10 +353,6 @@
 
       box-shadow:
         0 0 20px rgba(255, 45, 115, 0.25);
-
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
     }
 
     .add-button:hover {
@@ -376,14 +362,9 @@
         0 0 28px rgba(255, 45, 115, 0.42);
     }
 
-    .add-button:active {
-      transform: translateY(0);
-    }
-
     .add-button:disabled {
       opacity: 0.55;
       cursor: wait;
-      transform: none;
     }
 
     #status {
@@ -397,7 +378,7 @@
     }
 
     /* =========================
-       SONG LIST
+       LIST
     ========================= */
 
     .list-card {
@@ -438,12 +419,15 @@
     }
 
     select {
+      outline: none;
+      cursor: pointer;
+    }
+
+    #sort {
       min-width: 205px;
       height: 42px;
 
-      padding: 0 38px 0 17px;
-
-      outline: none;
+      padding: 0 17px;
 
       border: 1px solid var(--cyan);
       border-radius: 999px;
@@ -452,13 +436,59 @@
       background: #071013;
 
       font-size: 13px;
-
-      cursor: pointer;
     }
 
-    select:focus {
+    /* =========================
+       FILTER
+    ========================= */
+
+    .filters {
+      position: relative;
+      z-index: 2;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      padding: 14px 30px;
+
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .filter-button {
+      height: 34px;
+
+      padding: 0 14px;
+
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+
+      color: #aeb9bd;
+      background: rgba(255, 255, 255, 0.025);
+
+      font-size: 12px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+    }
+
+    .filter-button:hover {
+      border-color: var(--cyan);
+      color: white;
+    }
+
+    .filter-button.active {
+      color: #030607;
+      background: var(--cyan);
+      border-color: var(--cyan);
+
       box-shadow:
-        0 0 0 2px rgba(64, 224, 208, 0.09);
+        0 0 14px rgba(64, 224, 208, 0.18);
     }
 
     /* =========================
@@ -470,13 +500,13 @@
       z-index: 1;
 
       display: grid;
-      grid-template-columns: 150px minmax(0, 1fr) 140px;
+      grid-template-columns: 150px minmax(0, 1fr) 170px;
 
       align-items: center;
 
-      min-height: 76px;
+      min-height: 100px;
 
-      padding: 9px 30px;
+      padding: 12px 30px;
 
       border-bottom: 1px solid rgba(255, 255, 255, 0.075);
 
@@ -527,25 +557,11 @@
       font-size: 12px;
 
       cursor: pointer;
-
-      transition:
-        background 0.15s ease,
-        color 0.15s ease,
-        border-color 0.15s ease,
-        box-shadow 0.15s ease,
-        transform 0.15s ease;
     }
 
     .vote:hover {
       color: var(--cyan);
       background: rgba(64, 224, 208, 0.13);
-
-      box-shadow:
-        0 0 12px rgba(64, 224, 208, 0.16);
-    }
-
-    .vote:active {
-      transform: scale(0.94);
     }
 
     .vote:disabled {
@@ -580,20 +596,10 @@
       font-weight: 500;
 
       text-align: center;
-
-      text-shadow:
-        0 0 10px rgba(64, 224, 208, 0.22);
-
-      transition:
-        color 0.15s ease,
-        text-shadow 0.15s ease;
     }
 
     .count.negative {
       color: var(--pink);
-
-      text-shadow:
-        0 0 10px rgba(255, 45, 115, 0.25);
     }
 
     .song-info {
@@ -619,7 +625,6 @@
       color: #91a0a6;
 
       font-size: 13px;
-      line-height: 1.3;
     }
 
     .new {
@@ -638,20 +643,51 @@
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.5px;
+    }
+
+    /* =========================
+       STATUS
+    ========================= */
+
+    .song-status {
+      margin-top: 8px;
+    }
+
+    .status-select {
+      width: 155px;
+      height: 32px;
+
+      padding: 0 10px;
+
+      border: 1px solid rgba(64, 224, 208, 0.45);
+      border-radius: 999px;
+
+      color: white;
+      background: #071013;
+
+      font-size: 11px;
+    }
+
+    .status-select:focus {
+      border-color: var(--cyan);
 
       box-shadow:
-        0 0 9px rgba(64, 224, 208, 0.08);
+        0 0 0 2px rgba(64, 224, 208, 0.08);
     }
 
     .actions {
       display: flex;
       justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .listen {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+
       gap: 8px;
 
       min-width: 126px;
@@ -669,20 +705,10 @@
       font-weight: 600;
 
       text-decoration: none;
-
-      transition:
-        background 0.15s ease,
-        box-shadow 0.15s ease,
-        transform 0.15s ease;
     }
 
     .listen:hover {
       background: rgba(255, 45, 115, 0.11);
-
-      box-shadow:
-        0 0 18px rgba(255, 45, 115, 0.16);
-
-      transform: translateY(-1px);
     }
 
     .empty {
@@ -728,7 +754,7 @@
       }
 
       .song {
-        grid-template-columns: 140px minmax(0, 1fr) 125px;
+        grid-template-columns: 140px minmax(0, 1fr) 150px;
       }
     }
 
@@ -743,34 +769,16 @@
         padding-top: 18px;
       }
 
-      header {
-        padding-bottom: 20px;
-      }
-
-      .menu {
-        top: 0;
-        right: 2px;
-
-        font-size: 23px;
-      }
-
       .flyd-logo {
         width: min(500px, 92vw);
       }
 
       .subtitle {
         font-size: 14px;
-        line-height: 1.45;
       }
 
       .add-card {
         padding: 20px 16px 21px;
-        border-radius: 15px;
-      }
-
-      .section-title {
-        margin-bottom: 16px;
-        font-size: 14px;
       }
 
       .form-grid {
@@ -787,10 +795,6 @@
         height: 47px;
       }
 
-      .list-card {
-        border-radius: 15px;
-      }
-
       .list-header {
         flex-direction: column;
         align-items: stretch;
@@ -804,8 +808,19 @@
         font-size: 14px;
       }
 
-      select {
+      #sort {
         width: 100%;
+      }
+
+      .filters {
+        padding: 12px 16px;
+
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+
+      .filter-button {
+        flex: 0 0 auto;
       }
 
       .song {
@@ -813,7 +828,7 @@
 
         gap: 10px;
 
-        min-height: 82px;
+        min-height: 100px;
 
         padding: 12px 13px;
       }
@@ -824,7 +839,6 @@
 
       .vote {
         width: 35px;
-        height: 24px;
       }
 
       .count {
@@ -840,6 +854,15 @@
         font-size: 12px;
       }
 
+      .song-status {
+        margin-top: 7px;
+      }
+
+      .status-select {
+        width: 100%;
+        max-width: 190px;
+      }
+
       .actions {
         grid-column: 2;
 
@@ -853,10 +876,6 @@
         height: 34px;
 
         font-size: 12px;
-      }
-
-      footer {
-        padding-bottom: 10px;
       }
     }
 
@@ -886,1085 +905,1357 @@
 
 <body>
 
-  <div class="page">
+<div class="page">
 
-    <header>
+  <header>
 
-      <div class="menu" aria-hidden="true">
-        ☰
-      </div>
+    <div class="menu" aria-hidden="true">
+      ☰
+    </div>
 
-      <div class="logo-wrap">
+    <div class="logo-wrap">
+      <img
+        class="flyd-logo"
+        src="flyd-logo.PNG"
+        alt="FLYD"
+      >
+    </div>
 
-        <img
-          class="flyd-logo"
-          src="flyd-logo.PNG"
-          alt="FLYD"
-        >
+    <div class="subtitle">
+      Songs vorschlagen, gemeinsam abstimmen und die nächste Setlist vorbereiten. 🎸
+    </div>
 
-      </div>
-
-      <div class="subtitle">
-        Songs vorschlagen, gemeinsam abstimmen und die nächste Setlist vorbereiten. 🎸
-      </div>
-
-    </header>
+  </header>
 
 
-    <section class="card add-card">
+  <!-- =========================
+       SONG HINZUFÜGEN
+  ========================== -->
 
-      <div class="section-title">
+  <section class="card add-card">
 
-        <span class="plus">
-          +
-        </span>
+    <div class="section-title">
 
-        <span>
-          Song hinzufügen
-        </span>
+      <span class="plus">
+        +
+      </span>
 
-      </div>
+      <span>
+        Song hinzufügen
+      </span>
 
-
-      <form id="songForm">
-
-        <div class="form-grid">
-
-          <div class="input-wrap">
-
-            <span class="input-icon">
-              ♫
-            </span>
-
-            <input
-              id="title"
-              type="text"
-              maxlength="120"
-              placeholder="Songtitel"
-              required
-            >
-
-          </div>
+    </div>
 
 
-          <div class="input-wrap">
+    <form id="songForm">
 
-            <span class="input-icon">
-              ♙
-            </span>
+      <div class="form-grid">
 
-            <input
-              id="artist"
-              type="text"
-              maxlength="120"
-              placeholder="Interpret / Band"
-              required
-            >
+        <div class="input-wrap">
 
-          </div>
-
-
-          <div class="input-wrap">
-
-            <span class="input-icon">
-              ↗
-            </span>
-
-            <input
-              id="url"
-              type="url"
-              placeholder="Spotify- oder YouTube-Link (optional)"
-            >
-
-          </div>
-
-
-          <button
-            class="add-button"
-            id="addButton"
-            type="submit"
-          >
-            ＋ &nbsp; Song hinzufügen
-          </button>
-
-        </div>
-
-      </form>
-
-
-      <div id="status"></div>
-
-    </section>
-
-
-    <section class="card list-card">
-
-      <div class="list-header">
-
-        <div class="list-title">
-
-          <span class="music-icon">
+          <span class="input-icon">
             ♫
           </span>
 
-          <span>
-            Songliste
+          <input
+            id="title"
+            type="text"
+            maxlength="120"
+            placeholder="Songtitel"
+            required
+          >
+
+        </div>
+
+
+        <div class="input-wrap">
+
+          <span class="input-icon">
+            ♙
           </span>
 
+          <input
+            id="artist"
+            type="text"
+            maxlength="120"
+            placeholder="Interpret / Band"
+            required
+          >
+
         </div>
 
 
-        <select id="sort">
+        <div class="input-wrap">
 
-          <option value="new">
-            Neueste zuerst
-          </option>
+          <span class="input-icon">
+            ↗
+          </span>
 
-          <option value="votes">
-            Nach Stimmen
-          </option>
+          <input
+            id="url"
+            type="url"
+            placeholder="Spotify- oder YouTube-Link (optional)"
+          >
 
-          <option value="title">
-            Nach Titel
-          </option>
+        </div>
 
-        </select>
+
+        <button
+          class="add-button"
+          id="addButton"
+          type="submit"
+        >
+          ＋ &nbsp; Song hinzufügen
+        </button>
+
+      </div>
+
+    </form>
+
+
+    <div id="status"></div>
+
+  </section>
+
+
+  <!-- =========================
+       SONGLISTE
+  ========================== -->
+
+  <section class="card list-card">
+
+    <div class="list-header">
+
+      <div class="list-title">
+
+        <span class="music-icon">
+          ♫
+        </span>
+
+        <span>
+          Songliste
+        </span>
 
       </div>
 
 
-      <div id="songs">
+      <select id="sort">
 
-        <div class="empty">
-          Songs werden geladen …
-        </div>
+        <option value="new">
+          Neueste zuerst
+        </option>
 
+        <option value="votes">
+          Nach Stimmen
+        </option>
+
+        <option value="title">
+          Nach Titel
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- =========================
+         STATUS-FILTER
+    ========================== -->
+
+    <div class="filters">
+
+      <button
+        class="filter-button active"
+        type="button"
+        data-filter="all"
+      >
+        Alle
+      </button>
+
+      <button
+        class="filter-button"
+        type="button"
+        data-filter="suggestion"
+      >
+        💡 Vorschläge
+      </button>
+
+      <button
+        class="filter-button"
+        type="button"
+        data-filter="practice"
+      >
+        🛠️ Üben
+      </button>
+
+      <button
+        class="filter-button"
+        type="button"
+        data-filter="repertoire"
+      >
+        🎸 Repertoire
+      </button>
+
+      <button
+        class="filter-button"
+        type="button"
+        data-filter="archive"
+      >
+        🗄️ Archiv
+      </button>
+
+    </div>
+
+
+    <div id="songs">
+
+      <div class="empty">
+        Songs werden geladen …
       </div>
 
-    </section>
+    </div>
+
+  </section>
 
 
-    <footer>
-      FLYD · Music. Together.
-    </footer>
+  <footer>
+    FLYD · Music. Together.
+  </footer>
 
-  </div>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</div>
 
 
-  <script>
-
-    /*
-    ============================================================
-    SUPABASE
-    ============================================================
-    */
-
-    const SUPABASE_URL =
-      "https://likbfaaucgnxtelesftw.supabase.co";
-
-    const SUPABASE_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    const db =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+<script>
+
+/*
+============================================================
+SUPABASE
+============================================================
+*/
+
+const SUPABASE_URL =
+  "https://likbfaaucgnxtelesftw.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
+
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/*
+============================================================
+ELEMENTE
+============================================================
+*/
+
+const form =
+  document.getElementById("songForm");
+
+const songsElement =
+  document.getElementById("songs");
+
+const statusElement =
+  document.getElementById("status");
+
+const sortElement =
+  document.getElementById("sort");
+
+const addButton =
+  document.getElementById("addButton");
+
+
+let songs = [];
+
+let votes = [];
+
+let currentFilter = "all";
+
+
+/*
+============================================================
+BROWSER-ID
+============================================================
+*/
+
+function getVoterId() {
+
+  const storageKey =
+    "flyd-voter-id";
+
+  let voterId =
+    localStorage.getItem(storageKey);
+
+
+  if (!voterId) {
+
+    voterId =
+      crypto.randomUUID();
+
+    localStorage.setItem(
+      storageKey,
+      voterId
+    );
+
+  }
+
+
+  return voterId;
+
+}
+
+
+const voterId =
+  getVoterId();
+
+
+/*
+============================================================
+HTML SICHER AUSGEBEN
+============================================================
+*/
+
+function escapeHTML(value) {
+
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+
+    character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[character])
+  );
+
+}
+
+
+/*
+============================================================
+STATUS
+============================================================
+*/
+
+const STATUS_OPTIONS = {
+
+  suggestion: "💡 Vorschlag",
+
+  practice: "🛠️ Üben",
+
+  repertoire: "🎸 Repertoire",
+
+  archive: "🗄️ Archiv"
+
+};
+
+
+/*
+============================================================
+NEUER SONG?
+============================================================
+*/
+
+function isNew(createdAt) {
+
+  const created =
+    new Date(createdAt).getTime();
+
+  const sevenDays =
+    7 * 24 * 60 * 60 * 1000;
+
+  return (
+    Date.now() - created <
+    sevenDays
+  );
+
+}
+
+
+/*
+============================================================
+VOTE-DATEN
+============================================================
+*/
+
+function getVoteInfo(songId) {
+
+  const songVotes =
+    votes.filter(
+      vote =>
+        vote.song_id === songId
+    );
+
+
+  const score =
+    songVotes.reduce(
+      (sum, vote) =>
+        sum + Number(vote.vote),
+      0
+    );
+
+
+  const myVote =
+    songVotes.find(
+      vote =>
+        vote.voter_id === voterId
+    );
+
+
+  return {
+
+    score:
+      score,
+
+    mine:
+      myVote
+        ? Number(myVote.vote)
+        : 0
+
+  };
+
+}
+
+
+/*
+============================================================
+SORTIERUNG
+============================================================
+*/
+
+function getSortedSongs() {
+
+  let list =
+    [...songs];
+
+
+  /*
+    STATUS-FILTER
+  */
+
+  if (currentFilter !== "all") {
+
+    list =
+      list.filter(
+        song =>
+          song.status === currentFilter
       );
 
-
-    /*
-    ============================================================
-    ELEMENTE
-    ============================================================
-    */
-
-    const form =
-      document.getElementById("songForm");
-
-    const songsElement =
-      document.getElementById("songs");
-
-    const statusElement =
-      document.getElementById("status");
-
-    const sortElement =
-      document.getElementById("sort");
-
-    const addButton =
-      document.getElementById("addButton");
+  }
 
 
-    let songs = [];
+  /*
+    NEUESTE
+  */
 
-    let votes = [];
+  if (sortElement.value === "new") {
 
+    list.sort((a, b) => {
 
-    /*
-    ============================================================
-    BROWSER-ID
-    ============================================================
-    */
+      return (
+        new Date(b.created_at) -
+        new Date(a.created_at)
+      );
 
-    function getVoterId() {
+    });
 
-      const storageKey =
-        "flyd-voter-id";
-
-      let voterId =
-        localStorage.getItem(storageKey);
+  }
 
 
-      if (!voterId) {
+  /*
+    STIMMEN
+  */
 
-        voterId =
-          crypto.randomUUID();
+  else if (
+    sortElement.value === "votes"
+  ) {
 
-        localStorage.setItem(
-          storageKey,
-          voterId
-        );
+    list.sort((a, b) => {
+
+      const aScore =
+        getVoteInfo(a.id).score;
+
+      const bScore =
+        getVoteInfo(b.id).score;
+
+
+      if (bScore !== aScore) {
+
+        return bScore - aScore;
 
       }
 
 
-      return voterId;
-
-    }
-
-
-    const voterId =
-      getVoterId();
-
-
-    /*
-    ============================================================
-    HTML SICHER AUSGEBEN
-    ============================================================
-    */
-
-    function escapeHTML(value) {
-
-      return String(value ?? "").replace(
-        /[&<>"']/g,
-
-        character => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;"
-        }[character])
-      );
-
-    }
-
-
-    /*
-    ============================================================
-    NEUER SONG?
-    ============================================================
-    */
-
-    function isNew(createdAt) {
-
-      const created =
-        new Date(createdAt).getTime();
-
-      const sevenDays =
-        7 * 24 * 60 * 60 * 1000;
-
       return (
-        Date.now() - created <
-        sevenDays
+        new Date(b.created_at) -
+        new Date(a.created_at)
       );
+
+    });
+
+  }
+
+
+  /*
+    TITEL
+  */
+
+  else if (
+    sortElement.value === "title"
+  ) {
+
+    list.sort((a, b) => {
+
+      return String(
+        a.title || ""
+      ).localeCompare(
+        String(
+          b.title || ""
+        ),
+        "de"
+      );
+
+    });
+
+  }
+
+
+  return list;
+
+}
+
+
+/*
+============================================================
+SONGS RENDERN
+============================================================
+*/
+
+function renderSongs() {
+
+  const list =
+    getSortedSongs();
+
+
+  if (list.length === 0) {
+
+    let message =
+      "Noch keine Songs vorhanden 🎶";
+
+
+    if (currentFilter === "suggestion") {
+
+      message =
+        "Noch keine Songvorschläge vorhanden 💡";
+
+    }
+
+    else if (currentFilter === "practice") {
+
+      message =
+        "Noch keine Songs zum Üben vorhanden 🛠️";
+
+    }
+
+    else if (currentFilter === "repertoire") {
+
+      message =
+        "Noch keine Songs im Repertoire 🎸";
+
+    }
+
+    else if (currentFilter === "archive") {
+
+      message =
+        "Noch keine archivierten Songs 🗄️";
 
     }
 
 
-    /*
-    ============================================================
-    VOTE-DATEN
-    ============================================================
+    songsElement.innerHTML = `
+      <div class="empty">
+        ${message}
+      </div>
+    `;
 
-    score:
+    return;
 
-      👍 = +1
-      👎 = -1
+  }
 
-    Beispiel:
 
-      👍 👍 👍 👎
+  songsElement.innerHTML =
+    list.map(song => {
 
-      = 3 - 1
-      = 2
-    */
+      const id =
+        escapeHTML(song.id);
 
-    function getVoteInfo(songId) {
+      const title =
+        escapeHTML(song.title);
 
-      const songVotes =
-        votes.filter(
-          vote =>
-            vote.song_id === songId
-        );
+      const artist =
+        escapeHTML(song.artist);
+
+      const url =
+        escapeHTML(song.url);
+
+
+      const voteInfo =
+        getVoteInfo(song.id);
 
 
       const score =
-        songVotes.reduce(
-          (sum, vote) =>
-            sum + Number(vote.vote),
-          0
-        );
+        voteInfo.score;
 
 
       const myVote =
-        songVotes.find(
-          vote =>
-            vote.voter_id === voterId
-        );
-
-
-      return {
-
-        score:
-          score,
-
-        mine:
-          myVote
-            ? Number(myVote.vote)
-            : 0
-
-      };
-
-    }
-
-
-    /*
-    ============================================================
-    SORTIERUNG
-    ============================================================
-    */
-
-    function getSortedSongs() {
-
-      const list =
-        [...songs];
-
-
-      if (sortElement.value === "new") {
-
-        list.sort((a, b) => {
-
-          return (
-            new Date(b.created_at) -
-            new Date(a.created_at)
-          );
-
-        });
-
-      }
-
-
-      else if (
-        sortElement.value === "votes"
-      ) {
-
-        list.sort((a, b) => {
-
-          const aScore =
-            getVoteInfo(a.id).score;
-
-          const bScore =
-            getVoteInfo(b.id).score;
-
-
-          if (bScore !== aScore) {
-
-            return bScore - aScore;
-
-          }
-
-
-          return (
-            new Date(b.created_at) -
-            new Date(a.created_at)
-          );
-
-        });
-
-      }
-
-
-      else if (
-        sortElement.value === "title"
-      ) {
-
-        list.sort((a, b) => {
-
-          return String(
-            a.title || ""
-          ).localeCompare(
-            String(
-              b.title || ""
-            ),
-            "de"
-          );
-
-        });
-
-      }
-
-
-      return list;
-
-    }
-
-
-    /*
-    ============================================================
-    SONGS RENDERN
-    ============================================================
-    */
-
-    function renderSongs() {
-
-      const list =
-        getSortedSongs();
-
-
-      if (list.length === 0) {
-
-        songsElement.innerHTML = `
-          <div class="empty">
-            Noch keine Songs vorhanden 🎶
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      songsElement.innerHTML =
-        list.map(song => {
-
-          const id =
-            escapeHTML(song.id);
-
-          const title =
-            escapeHTML(song.title);
-
-          const artist =
-            escapeHTML(song.artist);
-
-          const url =
-            escapeHTML(song.url);
-
-
-          const voteInfo =
-            getVoteInfo(song.id);
-
-
-          const score =
-            voteInfo.score;
-
-
-          const myVote =
-            voteInfo.mine;
-
-
-          const upClass =
-            myVote === 1
-              ? "my-up"
-              : "";
-
-
-          const downClass =
-            myVote === -1
-              ? "my-down"
-              : "";
-
-
-          const scoreClass =
-            score < 0
-              ? "negative"
-              : "";
-
-
-          const newBadge =
-            isNew(song.created_at)
-              ? `<span class="new">NEU</span>`
-              : "";
-
-
-          const listen =
-            song.url
-              ? `
-                <a
-                  class="listen"
-                  href="${url}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  ▶ &nbsp; Anhören
-                </a>
-              `
-              : "";
-
-
-          return `
-
-            <div class="song">
-
-              <div class="vote-area">
-
-                <div class="vote-buttons">
-
-                  <button
-                    class="vote ${upClass}"
-                    type="button"
-                    data-id="${id}"
-                    data-vote="1"
-                    aria-label="Song hochvoten"
-                    title="Dafür stimmen"
-                  >
-                    ▲
-                  </button>
-
-                  <button
-                    class="vote ${downClass}"
-                    type="button"
-                    data-id="${id}"
-                    data-vote="-1"
-                    aria-label="Song runtervoten"
-                    title="Dagegen stimmen"
-                  >
-                    ▼
-                  </button>
-
-                </div>
-
-                <div>
-
-                  <div class="count ${scoreClass}">
-                    ${score}
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              <div class="song-info">
-
-                <div class="song-title">
-
-                  ${title}
-
-                  ${newBadge}
-
-                </div>
-
-                <div class="artist">
-                  ${artist}
-                </div>
-
-              </div>
-
-
-              <div class="actions">
-
-                ${listen}
-
-              </div>
+        voteInfo.mine;
+
+
+      const upClass =
+        myVote === 1
+          ? "my-up"
+          : "";
+
+
+      const downClass =
+        myVote === -1
+          ? "my-down"
+          : "";
+
+
+      const scoreClass =
+        score < 0
+          ? "negative"
+          : "";
+
+
+      const newBadge =
+        isNew(song.created_at)
+          ? `<span class="new">NEU</span>`
+          : "";
+
+
+      const listen =
+        song.url
+          ? `
+            <a
+              class="listen"
+              href="${url}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ▶ &nbsp; Anhören
+            </a>
+          `
+          : "";
+
+
+      const currentStatus =
+        song.status || "suggestion";
+
+
+      const statusOptions =
+        Object.entries(STATUS_OPTIONS)
+          .map(
+            ([value, label]) => `
+              <option
+                value="${value}"
+                ${value === currentStatus ? "selected" : ""}
+              >
+                ${label}
+              </option>
+            `
+          )
+          .join("");
+
+
+      return `
+
+        <div class="song">
+
+          <!-- VOTING -->
+
+          <div class="vote-area">
+
+            <div class="vote-buttons">
+
+              <button
+                class="vote ${upClass}"
+                type="button"
+                data-id="${id}"
+                data-vote="1"
+                aria-label="Song hochvoten"
+                title="Dafür stimmen"
+              >
+                ▲
+              </button>
+
+              <button
+                class="vote ${downClass}"
+                type="button"
+                data-id="${id}"
+                data-vote="-1"
+                aria-label="Song runtervoten"
+                title="Dagegen stimmen"
+              >
+                ▼
+              </button>
 
             </div>
 
-          `;
 
-        }).join("");
+            <div class="count ${scoreClass}">
+              ${score}
+            </div>
+
+          </div>
+
+
+          <!-- SONG-INFORMATION -->
+
+          <div class="song-info">
+
+            <div class="song-title">
+
+              ${title}
+
+              ${newBadge}
+
+            </div>
+
+            <div class="artist">
+              ${artist}
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="song-status">
+
+              <select
+                class="status-select"
+                data-status-id="${id}"
+                aria-label="Songstatus ändern"
+              >
+
+                ${statusOptions}
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- ANHÖREN -->
+
+          <div class="actions">
+
+            ${listen}
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/*
+============================================================
+SONGS LADEN
+============================================================
+*/
+
+async function loadSongs() {
+
+  const {
+    data,
+    error
+  } = await db
+    .from("songs")
+    .select(
+      "id,title,artist,url,status,created_at"
+    )
+    .order(
+      "created_at",
+      {
+        ascending: false
+      }
+    );
+
+
+  if (error) {
+
+    console.error(
+      "Songs Supabase Fehler:",
+      error
+    );
+
+    statusElement.textContent =
+      "❌ " +
+      error.message +
+      " (" +
+      error.code +
+      ")";
+
+    return;
+
+  }
+
+
+  songs =
+    data || [];
+
+
+  await loadVotes();
+
+}
+
+
+/*
+============================================================
+VOTES LADEN
+============================================================
+*/
+
+async function loadVotes() {
+
+  const {
+    data,
+    error
+  } = await db
+    .from("song_votes")
+    .select(
+      "song_id,voter_id,vote"
+    );
+
+
+  if (error) {
+
+    console.error(
+      "Votes Supabase Fehler:",
+      error
+    );
+
+    statusElement.textContent =
+      "❌ Stimmen konnten nicht geladen werden.";
+
+    return;
+
+  }
+
+
+  votes =
+    data || [];
+
+
+  statusElement.textContent =
+    "";
+
+
+  renderSongs();
+
+}
+
+
+/*
+============================================================
+SONG HINZUFÜGEN
+============================================================
+*/
+
+form.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    const title =
+      document
+        .getElementById("title")
+        .value
+        .trim();
+
+
+    const artist =
+      document
+        .getElementById("artist")
+        .value
+        .trim();
+
+
+    const url =
+      document
+        .getElementById("url")
+        .value
+        .trim();
+
+
+    if (
+      !title ||
+      !artist
+    ) {
+
+      statusElement.textContent =
+        "Bitte Songtitel und Interpret eingeben.";
+
+      return;
 
     }
 
 
-    /*
-    ============================================================
-    SONGS LADEN
-    ============================================================
-    */
+    addButton.disabled =
+      true;
 
-    async function loadSongs() {
+    statusElement.textContent =
+      "Song wird hinzugefügt …";
 
-      const {
-        data,
+
+    const {
+      error
+    } = await db
+      .from("songs")
+      .insert({
+
+        title:
+          title,
+
+        artist:
+          artist,
+
+        url:
+          url || null,
+
+        status:
+          "suggestion"
+
+      });
+
+
+    addButton.disabled =
+      false;
+
+
+    if (error) {
+
+      console.error(
+        "Insert Fehler:",
         error
-      } = await db
-        .from("songs")
-        .select(
-          "id,title,artist,url,created_at"
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
+      );
 
+      statusElement.textContent =
+        "❌ Song konnte nicht hinzugefügt werden.";
 
-      if (error) {
-
-        console.error(
-          "Songs Supabase Fehler:",
-          error
-        );
-
-        statusElement.textContent =
-          "❌ " +
-          error.message +
-          " (" +
-          error.code +
-          ")";
-
-        return;
-
-      }
-
-
-      songs =
-        data || [];
-
-
-      await loadVotes();
+      return;
 
     }
 
 
-    /*
-    ============================================================
-    VOTES LADEN
-    ============================================================
-    */
-
-    async function loadVotes() {
-
-      const {
-        data,
-        error
-      } = await db
-        .from("song_votes")
-        .select(
-          "song_id,voter_id,vote"
-        );
+    form.reset();
 
 
-      if (error) {
-
-        console.error(
-          "Votes Supabase Fehler:",
-          error
-        );
-
-        statusElement.textContent =
-          "❌ Stimmen konnten nicht geladen werden.";
-
-        return;
-
-      }
+    statusElement.textContent =
+      "✅ Song hinzugefügt!";
 
 
-      votes =
-        data || [];
+    await loadSongs();
 
+
+    setTimeout(() => {
 
       statusElement.textContent =
         "";
 
+    }, 2000);
 
-      renderSongs();
+  }
+);
+
+
+/*
+============================================================
+VOTING
+============================================================
+*/
+
+songsElement.addEventListener(
+  "click",
+  async event => {
+
+    const button =
+      event.target.closest(
+        "[data-vote]"
+      );
+
+
+    if (!button) {
+      return;
+    }
+
+
+    const songId =
+      button.dataset.id;
+
+
+    const newVote =
+      Number(
+        button.dataset.vote
+      );
+
+
+    if (
+      newVote !== 1 &&
+      newVote !== -1
+    ) {
+      return;
+    }
+
+
+    const currentVote =
+      getVoteInfo(songId).mine;
+
+
+    button.disabled =
+      true;
+
+
+    statusElement.textContent =
+      "Stimme wird gespeichert …";
+
+
+    let error = null;
+
+
+    /*
+      GLEICHEN VOTE NOCHMAL
+      = VOTE ENTFERNEN
+    */
+
+    if (
+      currentVote === newVote
+    ) {
+
+      const result =
+        await db
+          .from("song_votes")
+          .delete()
+          .eq(
+            "song_id",
+            songId
+          )
+          .eq(
+            "voter_id",
+            voterId
+          );
+
+
+      error =
+        result.error;
 
     }
 
 
     /*
-    ============================================================
-    SONG HINZUFÜGEN
-    ============================================================
+      NEUER VOTE ODER WECHSEL
     */
 
-    form.addEventListener(
-      "submit",
-      async event => {
+    else {
 
-        event.preventDefault();
+      const result =
+        await db
+          .from("song_votes")
+          .upsert(
 
+            {
+              song_id:
+                songId,
 
-        const title =
-          document
-            .getElementById("title")
-            .value
-            .trim();
+              voter_id:
+                voterId,
 
+              vote:
+                newVote
+            },
 
-        const artist =
-          document
-            .getElementById("artist")
-            .value
-            .trim();
+            {
+              onConflict:
+                "song_id,voter_id"
+            }
 
-
-        const url =
-          document
-            .getElementById("url")
-            .value
-            .trim();
+          );
 
 
-        if (
-          !title ||
-          !artist
-        ) {
+      error =
+        result.error;
 
-          statusElement.textContent =
-            "Bitte Songtitel und Interpret eingeben.";
-
-          return;
-
-        }
+    }
 
 
-        addButton.disabled =
-          true;
-
-        statusElement.textContent =
-          "Song wird hinzugefügt …";
+    button.disabled =
+      false;
 
 
-        const {
-          error
-        } = await db
-          .from("songs")
-          .insert({
+    if (error) {
 
-            title:
-              title,
+      console.error(
+        "Vote Fehler:",
+        error
+      );
 
-            artist:
-              artist,
+      statusElement.textContent =
+        "❌ Abstimmung fehlgeschlagen.";
 
-            url:
-              url || null
+      return;
+
+    }
+
+
+    await loadVotes();
+
+
+    setTimeout(() => {
+
+      statusElement.textContent =
+        "";
+
+    }, 800);
+
+  }
+);
+
+
+/*
+============================================================
+STATUS ÄNDERN
+============================================================
+*/
+
+songsElement.addEventListener(
+  "change",
+  async event => {
+
+    const select =
+      event.target.closest(
+        "[data-status-id]"
+      );
+
+
+    if (!select) {
+      return;
+    }
+
+
+    const songId =
+      select.dataset.statusId;
+
+
+    const newStatus =
+      select.value;
+
+
+    if (
+      !STATUS_OPTIONS[newStatus]
+    ) {
+      return;
+    }
+
+
+    select.disabled =
+      true;
+
+
+    statusElement.textContent =
+      "Status wird gespeichert …";
+
+
+    const {
+      error
+    } = await db
+      .from("songs")
+      .update({
+        status:
+          newStatus
+      })
+      .eq(
+        "id",
+        songId
+      );
+
+
+    select.disabled =
+      false;
+
+
+    if (error) {
+
+      console.error(
+        "Status Fehler:",
+        error
+      );
+
+      statusElement.textContent =
+        "❌ Status konnte nicht geändert werden.";
+
+      return;
+
+    }
+
+
+    /*
+      Lokale Daten direkt aktualisieren.
+    */
+
+    const song =
+      songs.find(
+        item =>
+          item.id === songId
+      );
+
+
+    if (song) {
+
+      song.status =
+        newStatus;
+
+    }
+
+
+    statusElement.textContent =
+      "✅ Status geändert!";
+
+
+    renderSongs();
+
+
+    setTimeout(() => {
+
+      statusElement.textContent =
+        "";
+
+    }, 1000);
+
+  }
+);
+
+
+/*
+============================================================
+FILTER
+============================================================
+*/
+
+document
+  .querySelectorAll(".filter-button")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        currentFilter =
+          button.dataset.filter;
+
+
+        document
+          .querySelectorAll(".filter-button")
+          .forEach(item => {
+
+            item.classList.toggle(
+              "active",
+              item === button
+            );
 
           });
 
 
-        addButton.disabled =
-          false;
-
-
-        if (error) {
-
-          console.error(
-            "Insert Fehler:",
-            error
-          );
-
-          statusElement.textContent =
-            "❌ Song konnte nicht hinzugefügt werden.";
-
-          return;
-
-        }
-
-
-        form.reset();
-
-
-        statusElement.textContent =
-          "✅ Song hinzugefügt!";
-
-
-        await loadSongs();
-
-
-        setTimeout(() => {
-
-          statusElement.textContent =
-            "";
-
-        }, 2000);
+        renderSongs();
 
       }
     );
 
+  });
 
-    /*
-    ============================================================
-    VOTING
-    ============================================================
 
-    Verhalten:
+/*
+============================================================
+SORTIERUNG
+============================================================
+*/
 
-      Noch keine Stimme
-        ▲ → +1
-        ▼ → -1
+sortElement.addEventListener(
+  "change",
+  renderSongs
+);
 
-      Schon 👍
-        ▲ → Stimme entfernen
-        ▼ → auf 👎 wechseln
 
-      Schon 👎
-        ▼ → Stimme entfernen
-        ▲ → auf 👍 wechseln
-    */
+/*
+============================================================
+REALTIME
+============================================================
+*/
 
-    songsElement.addEventListener(
-      "click",
-      async event => {
+db
+  .channel("songs-live")
 
-        const button =
-          event.target.closest(
-            "[data-vote]"
-          );
+  .on(
+    "postgres_changes",
 
+    {
+      event: "*",
+      schema: "public",
+      table: "songs"
+    },
 
-        if (!button) {
-          return;
-        }
+    () => {
 
+      loadSongs();
 
-        const songId =
-          button.dataset.id;
+    }
 
+  )
 
-        const newVote =
-          Number(
-            button.dataset.vote
-          );
+  .on(
+    "postgres_changes",
 
+    {
+      event: "*",
+      schema: "public",
+      table: "song_votes"
+    },
 
-        if (
-          newVote !== 1 &&
-          newVote !== -1
-        ) {
-          return;
-        }
+    () => {
 
+      loadVotes();
 
-        /*
-          Aktuelle eigene Stimme herausfinden.
-        */
+    }
 
-        const currentVote =
-          getVoteInfo(songId).mine;
+  )
 
+  .subscribe();
 
-        button.disabled =
-          true;
 
+/*
+============================================================
+START
+============================================================
+*/
 
-        statusElement.textContent =
-          "Stimme wird gespeichert …";
+loadSongs();
 
-
-        let error = null;
-
-
-        /*
-        --------------------------------------------------------
-        GLEICHEN BUTTON NOCHMAL
-        --------------------------------------------------------
-
-        Beispiel:
-
-        Ich habe 👍
-
-        Ich klicke nochmal 👍
-
-        → Stimme wird komplett gelöscht.
-        */
-
-        if (
-          currentVote === newVote
-        ) {
-
-          const result =
-            await db
-              .from("song_votes")
-              .delete()
-              .eq(
-                "song_id",
-                songId
-              )
-              .eq(
-                "voter_id",
-                voterId
-              );
-
-
-          error =
-            result.error;
-
-        }
-
-
-        /*
-        --------------------------------------------------------
-        NEUE STIMME ODER WECHSEL
-        --------------------------------------------------------
-
-        Noch keine Stimme:
-
-          0 → +1
-          0 → -1
-
-        Wechsel:
-
-          +1 → -1 = -2
-          -1 → +1 = +2
-        */
-
-        else {
-
-          const result =
-            await db
-              .from("song_votes")
-              .upsert(
-
-                {
-                  song_id:
-                    songId,
-
-                  voter_id:
-                    voterId,
-
-                  vote:
-                    newVote
-
-                },
-
-                {
-                  onConflict:
-                    "song_id,voter_id"
-                }
-
-              );
-
-
-          error =
-            result.error;
-
-        }
-
-
-        button.disabled =
-          false;
-
-
-        if (error) {
-
-          console.error(
-            "Vote Fehler:",
-            error
-          );
-
-          statusElement.textContent =
-            "❌ Abstimmung fehlgeschlagen.";
-
-          return;
-
-        }
-
-
-        /*
-          Danach die aktuellen Daten neu laden.
-          Dadurch sehen auch Score und Markierung
-          sofort richtig aus.
-        */
-
-        await loadVotes();
-
-
-        setTimeout(() => {
-
-          statusElement.textContent =
-            "";
-
-        }, 800);
-
-      }
-    );
-
-
-    /*
-    ============================================================
-    SORTIERUNG
-    ============================================================
-    */
-
-    sortElement.addEventListener(
-      "change",
-      renderSongs
-    );
-
-
-    /*
-    ============================================================
-    REALTIME
-    ============================================================
-    */
-
-    db
-      .channel("songs-live")
-
-      .on(
-        "postgres_changes",
-
-        {
-          event: "*",
-          schema: "public",
-          table: "songs"
-        },
-
-        () => {
-
-          loadSongs();
-
-        }
-
-      )
-
-      .on(
-        "postgres_changes",
-
-        {
-          event: "*",
-          schema: "public",
-          table: "song_votes"
-        },
-
-        () => {
-
-          loadVotes();
-
-        }
-
-      )
-
-      .subscribe();
-
-
-    /*
-    ============================================================
-    START
-    ============================================================
-    */
-
-    loadSongs();
-
-  </script>
+</script>
 
 </body>
 </html>
