@@ -1,98 +1,583 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BandSong – Song Voting</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎸 BandSong</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root{--bg:#f5f7fb;--card:#fff;--text:#18202a;--muted:#6d7785;--line:#e3e8ef;--accent:#635bff;--good:#0f9d72;--bad:#d9485f}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:980px;margin:auto;padding:34px 18px 60px}.hero{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}
-    h1{margin:0;font-size:clamp(30px,5vw,46px);letter-spacing:-1.5px}.sub{color:var(--muted);margin:8px 0 0}
-    .badge{background:#eceaff;color:#4e46d9;border-radius:999px;padding:8px 12px;font-weight:700;white-space:nowrap}
-    .panel,.song{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 5px 18px #16203308}
-    .panel{padding:18px;margin-bottom:24px}.form{display:grid;grid-template-columns:1.2fr 1fr 1.5fr auto;gap:10px}
-    input,button,select{font:inherit} input,select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--text)}
-    button{border:0;border-radius:11px;padding:12px 15px;font-weight:750;cursor:pointer}.add{background:var(--accent);color:white}.filters{display:flex;gap:10px;align-items:center;margin:16px 0}
-    .count{margin-left:auto;color:var(--muted);font-size:14px}.list{display:grid;gap:12px}.song{display:grid;grid-template-columns:72px 1fr auto;gap:15px;padding:16px;align-items:center}
-    .score{display:flex;flex-direction:column;align-items:center;gap:4px}.vote{width:40px;padding:7px;border:1px solid var(--line);background:#fff}.vote:hover{background:#f0f1ff}.score b{font-size:20px}
-    .title{font-size:18px;font-weight:800}.artist{color:var(--muted);margin-top:2px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:12px}.new{color:var(--good);font-weight:750}
-    .actions{display:flex;gap:8px}.listen{background:#eef0ff;color:#4e46d9}.delete{background:#fff0f2;color:var(--bad)} a{text-decoration:none}
-    .empty{text-align:center;color:var(--muted);padding:38px}.tip{font-size:13px;color:var(--muted);margin-top:10px}
-    @media(max-width:760px){.hero{align-items:start;flex-direction:column}.form{grid-template-columns:1fr 1fr}.form .wide{grid-column:1/-1}.form .add{grid-column:1/-1}.song{grid-template-columns:58px 1fr}.actions{grid-column:2}.count{margin-left:0}}
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      color: #182033;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+      padding: 30px 16px 60px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: #68738a;
+      margin-top: 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.06);
+    }
+
+    form {
+      display: grid;
+      gap: 10px;
+    }
+
+    input, select, button {
+      font: inherit;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #d5dae5;
+    }
+
+    button {
+      background: #182033;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    .song {
+      display: grid;
+      grid-template-columns: 55px 1fr auto;
+      gap: 15px;
+      align-items: center;
+      padding: 16px 0;
+      border-top: 1px solid #edf0f5;
+    }
+
+    .votes {
+      text-align: center;
+    }
+
+    .vote {
+      padding: 5px 10px;
+      background: white;
+      color: #182033;
+      border: 1px solid #d5dae5;
+    }
+
+    .vote:disabled {
+      opacity: .5;
+    }
+
+    .count {
+      font-weight: bold;
+      margin: 4px;
+    }
+
+    .title {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .artist {
+      color: #68738a;
+      margin-top: 3px;
+    }
+
+    .new {
+      background: #e5f7eb;
+      color: #16743a;
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 20px;
+      margin-left: 7px;
+    }
+
+    .listen {
+      color: #2459c5;
+      text-decoration: none;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .status {
+      margin-top: 10px;
+      color: #68738a;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #68738a;
+      padding: 30px;
+    }
+
+    @media (max-width: 650px) {
+      .song {
+        grid-template-columns: 50px 1fr;
+      }
+
+      .actions {
+        grid-column: 2;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="hero">
-    <div><h1>🎸 BandSong</h1><p class="sub">Songvorschläge sammeln, anhören und gemeinsam voten.</p></div>
-    <div class="badge" id="total">0 Songs</div>
-  </div>
 
-  <section class="panel">
-    <form id="form" class="form">
-      <input id="title" placeholder="Songtitel" required>
-      <input id="artist" placeholder="Interpret" required>
-      <input id="url" class="wide" type="url" placeholder="Spotify- oder YouTube-Link" required>
-      <button class="add" type="submit">+ Song hinzufügen</button>
+<div class="container">
+
+  <h1>🎸 BandSong</h1>
+  <p class="subtitle">
+    Songs vorschlagen, abstimmen und gemeinsam auswählen.
+  </p>
+
+  <div class="card">
+
+    <form id="songForm">
+
+      <input
+        id="title"
+        type="text"
+        placeholder="Songtitel"
+        required
+      >
+
+      <input
+        id="artist"
+        type="text"
+        placeholder="Interpret / Band"
+        required
+      >
+
+      <input
+        id="url"
+        type="url"
+        placeholder="Spotify- oder YouTube-Link (optional)"
+      >
+
+      <button type="submit">
+        + Song hinzufügen
+      </button>
+
     </form>
-    <div class="tip">Die Daten werden in diesem Browser gespeichert. Für eine echte gemeinsame Liste über mehrere Geräte braucht ihr noch eine Online-Datenbank.</div>
-  </section>
 
-  <div class="filters">
-    <select id="sort">
-      <option value="votes">Meiste Stimmen</option>
-      <option value="new">Neueste zuerst</option>
-      <option value="title">Titel A–Z</option>
-    </select>
-    <span class="count" id="count"></span>
+    <div id="status" class="status"></div>
+
   </div>
-  <main id="list" class="list"></main>
+
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <strong>🎵 Songliste</strong>
+
+      <select id="sort">
+        <option value="votes">Nach Stimmen</option>
+        <option value="new">Neueste zuerst</option>
+        <option value="title">Titel A–Z</option>
+      </select>
+
+    </div>
+
+    <div id="songs"></div>
+
+  </div>
+
 </div>
 
+
 <script>
-const KEY="bandsong-v1";
-let songs=JSON.parse(localStorage.getItem(KEY)||"[]");
-const $=id=>document.getElementById(id);
-function save(){localStorage.setItem(KEY,JSON.stringify(songs)); render()}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-function render(){
-  const mode=$("sort").value;
-  let arr=[...songs];
-  if(mode==="votes") arr.sort((a,b)=>(b.votes||0)-(a.votes||0)||b.created-a.created);
-  if(mode==="new") arr.sort((a,b)=>b.created-a.created);
-  if(mode==="title") arr.sort((a,b)=>(a.title+" "+a.artist).localeCompare(b.title+" "+b.artist,"de"));
-  $("total").textContent=`${songs.length} ${songs.length===1?"Song":"Songs"}`;
-  $("count").textContent=songs.length?`${songs.length} Vorschläge`:"Noch keine Vorschläge";
-  $("list").innerHTML=arr.length?arr.map(s=>{
-    const fresh=Date.now()-s.created<7*24*60*60*1000;
-    return `<article class="song">
-      <div class="score">
-        <button class="vote" title="Hochvoten" onclick="vote('${s.id}',1)">▲</button>
-        <b>${s.votes||0}</b>
-        <button class="vote" title="Runtervoten" onclick="vote('${s.id}',-1)">▼</button>
-      </div>
-      <div>
-        <div class="title">${esc(s.title)}</div><div class="artist">${esc(s.artist)}</div>
-        <div class="meta"><span>${new Date(s.created).toLocaleDateString("de-DE")}</span>${fresh?'<span class="new">• Neu</span>':''}</div>
-      </div>
-      <div class="actions">
-        <a class="listen button" href="${esc(s.url)}" target="_blank" rel="noopener">▶ Anhören</a>
-        <button class="delete" onclick="removeSong('${s.id}')">Löschen</button>
-      </div>
-    </article>`
-  }).join(""):`<div class="panel empty">Noch keine Songs. Fügt den ersten Vorschlag hinzu! 🎶</div>`;
+
+const SUPABASE_URL =
+  "https://likbfaaucgnxtelesftw.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+const form = document.getElementById("songForm");
+const songsElement = document.getElementById("songs");
+const statusElement = document.getElementById("status");
+const sortElement = document.getElementById("sort");
+
+let songs = [];
+
+
+function escapeHTML(value) {
+
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[character])
+  );
+
 }
-function vote(id,n){const s=songs.find(x=>x.id===id);if(s){s.votes=(s.votes||0)+n;save()}}
-function removeSong(id){if(confirm("Song wirklich löschen?")){songs=songs.filter(s=>s.id!==id);save()}}
-$("form").addEventListener("submit",e=>{
-  e.preventDefault();
-  const title=$("title").value.trim(),artist=$("artist").value.trim(),url=$("url").value.trim();
-  if(!title||!artist||!url)return;
-  songs.push({id:crypto.randomUUID(),title,artist,url,votes:0,created:Date.now()});
-  e.target.reset();save();
+
+
+function isNew(createdAt) {
+
+  return (
+    Date.now() -
+    new Date(createdAt).getTime()
+  ) < 7 * 24 * 60 * 60 * 1000;
+
+}
+
+
+function renderSongs() {
+
+  let list = [...songs];
+
+
+  if (sortElement.value === "new") {
+
+    list.sort(
+      (a,b) =>
+        new Date(b.created_at) -
+        new Date(a.created_at)
+    );
+
+  }
+
+
+  else if (sortElement.value === "title") {
+
+    list.sort(
+      (a,b) =>
+        a.title.localeCompare(b.title, "de")
+    );
+
+  }
+
+
+  else {
+
+    list.sort(
+      (a,b) =>
+        (b.votes || 0) -
+        (a.votes || 0)
+    );
+
+  }
+
+
+  if (list.length === 0) {
+
+    songsElement.innerHTML =
+      `<div class="empty">
+        Noch keine Songs vorhanden 🎶
+      </div>`;
+
+    return;
+
+  }
+
+
+  songsElement.innerHTML = list.map(song => `
+
+    <div class="song">
+
+      <div class="votes">
+
+        <button
+          class="vote"
+          data-id="${escapeHTML(song.id)}"
+          data-vote="1"
+        >
+          ▲
+        </button>
+
+        <div class="count">
+          ${song.votes || 0}
+        </div>
+
+        <button
+          class="vote"
+          data-id="${escapeHTML(song.id)}"
+          data-vote="-1"
+        >
+          ▼
+        </button>
+
+      </div>
+
+
+      <div>
+
+        <div class="title">
+
+          ${escapeHTML(song.title)}
+
+          ${
+            isNew(song.created_at)
+              ? `<span class="new">Neu</span>`
+              : ""
+          }
+
+        </div>
+
+        <div class="artist">
+          ${escapeHTML(song.artist)}
+        </div>
+
+      </div>
+
+
+      <div class="actions">
+
+        ${
+          song.url
+            ? `
+              <a
+                class="listen"
+                href="${escapeHTML(song.url)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ▶ Anhören
+              </a>
+            `
+            : ""
+        }
+
+      </div>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+async function loadSongs() {
+
+  const { data, error } =
+    await db
+      .from("songs")
+      .select(
+        "id,title,artist,url,votes,created_at"
+      );
+
+  if (error) {
+
+    console.error(error);
+
+    statusElement.textContent =
+      "❌ Verbindung zu Supabase fehlgeschlagen.";
+
+    return;
+
+  }
+
+
+  songs = data || [];
+
+  statusElement.textContent = "";
+
+  renderSongs();
+
+}
+
+
+form.addEventListener("submit", async event => {
+
+  event.preventDefault();
+
+
+  const title =
+    document.getElementById("title")
+      .value.trim();
+
+  const artist =
+    document.getElementById("artist")
+      .value.trim();
+
+  const url =
+    document.getElementById("url")
+      .value.trim();
+
+
+  if (!title || !artist) return;
+
+
+  statusElement.textContent =
+    "Song wird hinzugefügt…";
+
+
+  const { error } =
+    await db
+      .from("songs")
+      .insert({
+
+        title: title,
+        artist: artist,
+        url: url || null,
+        votes: 0
+
+      });
+
+
+  if (error) {
+
+    console.error(error);
+
+    statusElement.textContent =
+      "❌ Song konnte nicht hinzugefügt werden.";
+
+    return;
+
+  }
+
+
+  form.reset();
+
+  statusElement.textContent =
+    "✅ Song hinzugefügt!";
+
+  await loadSongs();
+
+
+  setTimeout(() => {
+
+    statusElement.textContent = "";
+
+  }, 2000);
+
 });
-$("sort").addEventListener("change",render);render();
+
+
+songsElement.addEventListener(
+  "click",
+  async event => {
+
+    const button =
+      event.target.closest("[data-vote]");
+
+    if (!button) return;
+
+
+    const id = button.dataset.id;
+
+    const change =
+      Number(button.dataset.vote);
+
+
+    const song =
+      songs.find(item => item.id === id);
+
+    if (!song) return;
+
+
+    button.disabled = true;
+
+
+    const newVotes =
+      Math.max(
+        0,
+        (song.votes || 0) + change
+      );
+
+
+    const { error } =
+      await db
+        .from("songs")
+        .update({
+          votes: newVotes
+        })
+        .eq("id", id);
+
+
+    button.disabled = false;
+
+
+    if (error) {
+
+      console.error(error);
+
+      statusElement.textContent =
+        "❌ Abstimmung fehlgeschlagen.";
+
+      return;
+
+    }
+
+
+    await loadSongs();
+
+  }
+);
+
+
+sortElement.addEventListener(
+  "change",
+  renderSongs
+);
+
+
+// Automatische Aktualisierung,
+// wenn jemand anderes einen Song hinzufügt
+// oder Stimmen verändert.
+
+db
+  .channel("songs-live")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "songs"
+    },
+    () => loadSongs()
+  )
+  .subscribe();
+
+
+loadSongs();
+
 </script>
+
 </body>
 </html>
