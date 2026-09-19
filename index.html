@@ -553,8 +553,6 @@
       cursor: wait;
     }
 
-    /* Eigene Stimme */
-
     .vote.my-up {
       color: #030607;
       background: var(--cyan);
@@ -585,16 +583,17 @@
 
       text-shadow:
         0 0 10px rgba(64, 224, 208, 0.22);
+
+      transition:
+        color 0.15s ease,
+        text-shadow 0.15s ease;
     }
 
-    .vote-label {
-      margin-top: 3px;
+    .count.negative {
+      color: var(--pink);
 
-      color: #718087;
-
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
+      text-shadow:
+        0 0 10px rgba(255, 45, 115, 0.25);
     }
 
     .song-info {
@@ -833,10 +832,6 @@
         font-size: 18px;
       }
 
-      .vote-label {
-        font-size: 8px;
-      }
-
       .song-title {
         font-size: 14px;
       }
@@ -893,8 +888,6 @@
 
   <div class="page">
 
-    <!-- HEADER -->
-
     <header>
 
       <div class="menu" aria-hidden="true">
@@ -917,8 +910,6 @@
 
     </header>
 
-
-    <!-- SONG HINZUFÜGEN -->
 
     <section class="card add-card">
 
@@ -1006,8 +997,6 @@
     </section>
 
 
-    <!-- SONG LISTE -->
-
     <section class="card list-card">
 
       <div class="list-header">
@@ -1062,8 +1051,6 @@
   </div>
 
 
-  <!-- SUPABASE -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
@@ -1077,14 +1064,6 @@
 
     const SUPABASE_URL =
       "https://likbfaaucgnxtelesftw.supabase.co";
-
-    /*
-      WICHTIG:
-      Hier muss dein AKTUELLER anon/publishable Key stehen.
-
-      Falls Supabase später "Invalid API key" meldet:
-      Supabase → Settings → API → Publishable/anon key
-    */
 
     const SUPABASE_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
@@ -1126,19 +1105,8 @@
 
     /*
     ============================================================
-    BROWSER-ID FÜR DAS VOTING
+    BROWSER-ID
     ============================================================
-
-    Jeder Browser bekommt einmalig eine zufällige ID.
-
-    Dadurch kann Supabase erkennen:
-
-    "Dieser Browser hat bei diesem Song bereits abgestimmt."
-
-    Wichtig:
-    Ohne Login ist das keine perfekte Personen-Erkennung.
-    Wer Browserdaten löscht oder ein anderes Gerät benutzt,
-    kann eine neue ID bekommen.
     */
 
     function getVoterId() {
@@ -1219,8 +1187,20 @@
 
     /*
     ============================================================
-    VOTE-DATEN FÜR EINEN SONG
+    VOTE-DATEN
     ============================================================
+
+    score:
+
+      👍 = +1
+      👎 = -1
+
+    Beispiel:
+
+      👍 👍 👍 👎
+
+      = 3 - 1
+      = 2
     */
 
     function getVoteInfo(songId) {
@@ -1232,8 +1212,12 @@
         );
 
 
-      const total =
-        songVotes.length;
+      const score =
+        songVotes.reduce(
+          (sum, vote) =>
+            sum + Number(vote.vote),
+          0
+        );
 
 
       const myVote =
@@ -1245,8 +1229,8 @@
 
       return {
 
-        total:
-          total,
+        score:
+          score,
 
         mine:
           myVote
@@ -1270,10 +1254,6 @@
         [...songs];
 
 
-      /*
-        NEUESTE ZUERST
-      */
-
       if (sortElement.value === "new") {
 
         list.sort((a, b) => {
@@ -1288,25 +1268,23 @@
       }
 
 
-      /*
-        MEISTE STIMMEN
-      */
-
       else if (
         sortElement.value === "votes"
       ) {
 
         list.sort((a, b) => {
 
-          const aVotes =
-            getVoteInfo(a.id).total;
+          const aScore =
+            getVoteInfo(a.id).score;
 
-          const bVotes =
-            getVoteInfo(b.id).total;
+          const bScore =
+            getVoteInfo(b.id).score;
 
 
-          if (bVotes !== aVotes) {
-            return bVotes - aVotes;
+          if (bScore !== aScore) {
+
+            return bScore - aScore;
+
           }
 
 
@@ -1319,10 +1297,6 @@
 
       }
 
-
-      /*
-        ALPHABETISCH
-      */
 
       else if (
         sortElement.value === "title"
@@ -1394,8 +1368,8 @@
             getVoteInfo(song.id);
 
 
-          const totalVotes =
-            voteInfo.total;
+          const score =
+            voteInfo.score;
 
 
           const myVote =
@@ -1414,12 +1388,10 @@
               : "";
 
 
-          const myVoteText =
-            myVote === 1
-              ? "Dein 👍"
-              : myVote === -1
-                ? "Dein 👎"
-                : "";
+          const scoreClass =
+            score < 0
+              ? "negative"
+              : "";
 
 
           const newBadge =
@@ -1476,13 +1448,11 @@
                 </div>
 
                 <div>
-                  <div class="count">
-                    ${totalVotes}
+
+                  <div class="count ${scoreClass}">
+                    ${score}
                   </div>
 
-                  <div class="vote-label">
-                    ${myVoteText || "Stimmen"}
-                  </div>
                 </div>
 
               </div>
@@ -1522,7 +1492,7 @@
 
     /*
     ============================================================
-    SONGS AUS SUPABASE LADEN
+    SONGS LADEN
     ============================================================
     */
 
@@ -1574,7 +1544,7 @@
 
     /*
     ============================================================
-    VOTES AUS SUPABASE LADEN
+    VOTES LADEN
     ============================================================
     */
 
@@ -1685,10 +1655,7 @@
               artist,
 
             url:
-              url || null,
-
-            votes:
-              0
+              url || null
 
           });
 
@@ -1737,6 +1704,20 @@
     ============================================================
     VOTING
     ============================================================
+
+    Verhalten:
+
+      Noch keine Stimme
+        ▲ → +1
+        ▼ → -1
+
+      Schon 👍
+        ▲ → Stimme entfernen
+        ▼ → auf 👎 wechseln
+
+      Schon 👎
+        ▼ → Stimme entfernen
+        ▲ → auf 👍 wechseln
     */
 
     songsElement.addEventListener(
@@ -1772,6 +1753,14 @@
         }
 
 
+        /*
+          Aktuelle eigene Stimme herausfinden.
+        */
+
+        const currentVote =
+          getVoteInfo(songId).mine;
+
+
         button.disabled =
           true;
 
@@ -1780,40 +1769,94 @@
           "Stimme wird gespeichert …";
 
 
+        let error = null;
+
+
         /*
-          upsert bedeutet:
+        --------------------------------------------------------
+        GLEICHEN BUTTON NOCHMAL
+        --------------------------------------------------------
 
-          - Wenn du bei diesem Song noch nicht
-            abgestimmt hast → neue Stimme erstellen.
+        Beispiel:
 
-          - Wenn du schon abgestimmt hast →
-            bestehende Stimme ändern.
+        Ich habe 👍
+
+        Ich klicke nochmal 👍
+
+        → Stimme wird komplett gelöscht.
         */
 
-        const {
-          error
-        } = await db
-          .from("song_votes")
-          .upsert(
+        if (
+          currentVote === newVote
+        ) {
 
-            {
-              song_id:
-                songId,
+          const result =
+            await db
+              .from("song_votes")
+              .delete()
+              .eq(
+                "song_id",
+                songId
+              )
+              .eq(
+                "voter_id",
+                voterId
+              );
 
-              voter_id:
-                voterId,
 
-              vote:
-                newVote
+          error =
+            result.error;
 
-            },
+        }
 
-            {
-              onConflict:
-                "song_id,voter_id"
-            }
 
-          );
+        /*
+        --------------------------------------------------------
+        NEUE STIMME ODER WECHSEL
+        --------------------------------------------------------
+
+        Noch keine Stimme:
+
+          0 → +1
+          0 → -1
+
+        Wechsel:
+
+          +1 → -1 = -2
+          -1 → +1 = +2
+        */
+
+        else {
+
+          const result =
+            await db
+              .from("song_votes")
+              .upsert(
+
+                {
+                  song_id:
+                    songId,
+
+                  voter_id:
+                    voterId,
+
+                  vote:
+                    newVote
+
+                },
+
+                {
+                  onConflict:
+                    "song_id,voter_id"
+                }
+
+              );
+
+
+          error =
+            result.error;
+
+        }
 
 
         button.disabled =
@@ -1835,11 +1878,11 @@
         }
 
 
-        statusElement.textContent =
-          newVote === 1
-            ? "👍 Deine Stimme wurde gespeichert."
-            : "👎 Deine Stimme wurde gespeichert.";
-
+        /*
+          Danach die aktuellen Daten neu laden.
+          Dadurch sehen auch Score und Markierung
+          sofort richtig aus.
+        */
 
         await loadVotes();
 
@@ -1849,7 +1892,7 @@
           statusElement.textContent =
             "";
 
-        }, 1500);
+        }, 800);
 
       }
     );
