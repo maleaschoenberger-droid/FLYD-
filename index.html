@@ -121,13 +121,6 @@
       margin: 0 auto 8px;
     }
 
-    /*
-      DAS ECHTE GENERIERTE FLYD-LOGO
-
-      Wichtig:
-      flyd-logo.png muss im selben Ordner wie index.html liegen.
-    */
-
     .flyd-logo {
       display: block;
 
@@ -477,7 +470,7 @@
       z-index: 1;
 
       display: grid;
-      grid-template-columns: 116px minmax(0, 1fr) 140px;
+      grid-template-columns: 150px minmax(0, 1fr) 140px;
 
       align-items: center;
 
@@ -538,6 +531,7 @@
       transition:
         background 0.15s ease,
         color 0.15s ease,
+        border-color 0.15s ease,
         box-shadow 0.15s ease,
         transform 0.15s ease;
     }
@@ -559,6 +553,26 @@
       cursor: wait;
     }
 
+    /* Eigene Stimme */
+
+    .vote.my-up {
+      color: #030607;
+      background: var(--cyan);
+      border-color: var(--cyan);
+
+      box-shadow:
+        0 0 14px rgba(64, 224, 208, 0.35);
+    }
+
+    .vote.my-down {
+      color: white;
+      background: var(--pink);
+      border-color: var(--pink);
+
+      box-shadow:
+        0 0 14px rgba(255, 45, 115, 0.35);
+    }
+
     .count {
       min-width: 34px;
 
@@ -571,6 +585,16 @@
 
       text-shadow:
         0 0 10px rgba(64, 224, 208, 0.22);
+    }
+
+    .vote-label {
+      margin-top: 3px;
+
+      color: #718087;
+
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
     }
 
     .song-info {
@@ -705,7 +729,7 @@
       }
 
       .song {
-        grid-template-columns: 105px minmax(0, 1fr) 125px;
+        grid-template-columns: 140px minmax(0, 1fr) 125px;
       }
     }
 
@@ -786,7 +810,7 @@
       }
 
       .song {
-        grid-template-columns: 84px minmax(0, 1fr);
+        grid-template-columns: 91px minmax(0, 1fr);
 
         gap: 10px;
 
@@ -807,6 +831,10 @@
       .count {
         min-width: 25px;
         font-size: 18px;
+      }
+
+      .vote-label {
+        font-size: 8px;
       }
 
       .song-title {
@@ -844,7 +872,7 @@
       }
 
       .song {
-        grid-template-columns: 76px minmax(0, 1fr);
+        grid-template-columns: 83px minmax(0, 1fr);
 
         padding-left: 8px;
         padding-right: 8px;
@@ -861,14 +889,11 @@
   </style>
 </head>
 
-
 <body>
 
   <div class="page">
 
-    <!-- =========================
-         HEADER
-    ========================== -->
+    <!-- HEADER -->
 
     <header>
 
@@ -877,12 +902,6 @@
       </div>
 
       <div class="logo-wrap">
-
-        <!--
-          DEIN ECHTES GENERIERTES LOGO
-
-          flyd-logo.png muss neben index.html liegen.
-        -->
 
         <img
           class="flyd-logo"
@@ -899,9 +918,7 @@
     </header>
 
 
-    <!-- =========================
-         SONG HINZUFÜGEN
-    ========================== -->
+    <!-- SONG HINZUFÜGEN -->
 
     <section class="card add-card">
 
@@ -989,9 +1006,7 @@
     </section>
 
 
-    <!-- =========================
-         SONG LISTE
-    ========================== -->
+    <!-- SONG LISTE -->
 
     <section class="card list-card">
 
@@ -1047,9 +1062,7 @@
   </div>
 
 
-  <!-- =========================
-       SUPABASE
-    ========================== -->
+  <!-- SUPABASE -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1058,12 +1071,20 @@
 
     /*
     ============================================================
-    SUPABASE KONFIGURATION
+    SUPABASE
     ============================================================
     */
 
     const SUPABASE_URL =
       "https://likbfaaucgnxtelesftw.supabase.co";
+
+    /*
+      WICHTIG:
+      Hier muss dein AKTUELLER anon/publishable Key stehen.
+
+      Falls Supabase später "Invalid API key" meldet:
+      Supabase → Settings → API → Publishable/anon key
+    */
 
     const SUPABASE_KEY =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpa2JmYWF1Y2dueHRlbGVzZnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MDQ2MjMsImV4cCI6MjEwNTM4MDYyM30.ATnzNZueP8sr57juyNIx_ce_7gKwqhk8ukzXtXKFXZc";
@@ -1099,6 +1120,56 @@
 
 
     let songs = [];
+
+    let votes = [];
+
+
+    /*
+    ============================================================
+    BROWSER-ID FÜR DAS VOTING
+    ============================================================
+
+    Jeder Browser bekommt einmalig eine zufällige ID.
+
+    Dadurch kann Supabase erkennen:
+
+    "Dieser Browser hat bei diesem Song bereits abgestimmt."
+
+    Wichtig:
+    Ohne Login ist das keine perfekte Personen-Erkennung.
+    Wer Browserdaten löscht oder ein anderes Gerät benutzt,
+    kann eine neue ID bekommen.
+    */
+
+    function getVoterId() {
+
+      const storageKey =
+        "flyd-voter-id";
+
+      let voterId =
+        localStorage.getItem(storageKey);
+
+
+      if (!voterId) {
+
+        voterId =
+          crypto.randomUUID();
+
+        localStorage.setItem(
+          storageKey,
+          voterId
+        );
+
+      }
+
+
+      return voterId;
+
+    }
+
+
+    const voterId =
+      getVoterId();
 
 
     /*
@@ -1148,6 +1219,47 @@
 
     /*
     ============================================================
+    VOTE-DATEN FÜR EINEN SONG
+    ============================================================
+    */
+
+    function getVoteInfo(songId) {
+
+      const songVotes =
+        votes.filter(
+          vote =>
+            vote.song_id === songId
+        );
+
+
+      const total =
+        songVotes.length;
+
+
+      const myVote =
+        songVotes.find(
+          vote =>
+            vote.voter_id === voterId
+        );
+
+
+      return {
+
+        total:
+          total,
+
+        mine:
+          myVote
+            ? Number(myVote.vote)
+            : 0
+
+      };
+
+    }
+
+
+    /*
+    ============================================================
     SORTIERUNG
     ============================================================
     */
@@ -1159,25 +1271,16 @@
 
 
       /*
-        STANDARD:
-        NEUESTE SONGS ZUERST
+        NEUESTE ZUERST
       */
 
       if (sortElement.value === "new") {
 
         list.sort((a, b) => {
 
-          const dateDifference =
-            new Date(b.created_at) -
-            new Date(a.created_at);
-
-          if (dateDifference !== 0) {
-            return dateDifference;
-          }
-
           return (
-            (b.votes || 0) -
-            (a.votes || 0)
+            new Date(b.created_at) -
+            new Date(a.created_at)
           );
 
         });
@@ -1195,13 +1298,17 @@
 
         list.sort((a, b) => {
 
-          const voteDifference =
-            (b.votes || 0) -
-            (a.votes || 0);
+          const aVotes =
+            getVoteInfo(a.id).total;
 
-          if (voteDifference !== 0) {
-            return voteDifference;
+          const bVotes =
+            getVoteInfo(b.id).total;
+
+
+          if (bVotes !== aVotes) {
+            return bVotes - aVotes;
           }
+
 
           return (
             new Date(b.created_at) -
@@ -1282,8 +1389,37 @@
           const url =
             escapeHTML(song.url);
 
-          const votes =
-            Number(song.votes || 0);
+
+          const voteInfo =
+            getVoteInfo(song.id);
+
+
+          const totalVotes =
+            voteInfo.total;
+
+
+          const myVote =
+            voteInfo.mine;
+
+
+          const upClass =
+            myVote === 1
+              ? "my-up"
+              : "";
+
+
+          const downClass =
+            myVote === -1
+              ? "my-down"
+              : "";
+
+
+          const myVoteText =
+            myVote === 1
+              ? "Dein 👍"
+              : myVote === -1
+                ? "Dein 👎"
+                : "";
 
 
           const newBadge =
@@ -1316,29 +1452,37 @@
                 <div class="vote-buttons">
 
                   <button
-                    class="vote"
+                    class="vote ${upClass}"
                     type="button"
                     data-id="${id}"
                     data-vote="1"
                     aria-label="Song hochvoten"
+                    title="Dafür stimmen"
                   >
                     ▲
                   </button>
 
                   <button
-                    class="vote"
+                    class="vote ${downClass}"
                     type="button"
                     data-id="${id}"
                     data-vote="-1"
                     aria-label="Song runtervoten"
+                    title="Dagegen stimmen"
                   >
                     ▼
                   </button>
 
                 </div>
 
-                <div class="count">
-                  ${votes}
+                <div>
+                  <div class="count">
+                    ${totalVotes}
+                  </div>
+
+                  <div class="vote-label">
+                    ${myVoteText || "Stimmen"}
+                  </div>
                 </div>
 
               </div>
@@ -1390,7 +1534,7 @@
       } = await db
         .from("songs")
         .select(
-          "id,title,artist,url,votes,created_at"
+          "id,title,artist,url,created_at"
         )
         .order(
           "created_at",
@@ -1403,7 +1547,7 @@
       if (error) {
 
         console.error(
-          "Supabase Fehler:",
+          "Songs Supabase Fehler:",
           error
         );
 
@@ -1420,6 +1564,48 @@
 
 
       songs =
+        data || [];
+
+
+      await loadVotes();
+
+    }
+
+
+    /*
+    ============================================================
+    VOTES AUS SUPABASE LADEN
+    ============================================================
+    */
+
+    async function loadVotes() {
+
+      const {
+        data,
+        error
+      } = await db
+        .from("song_votes")
+        .select(
+          "song_id,voter_id,vote"
+        );
+
+
+      if (error) {
+
+        console.error(
+          "Votes Supabase Fehler:",
+          error
+        );
+
+        statusElement.textContent =
+          "❌ Stimmen konnten nicht geladen werden.";
+
+        return;
+
+      }
+
+
+      votes =
         data || [];
 
 
@@ -1568,24 +1754,20 @@
         }
 
 
-        const id =
+        const songId =
           button.dataset.id;
 
 
-        const change =
+        const newVote =
           Number(
             button.dataset.vote
           );
 
 
-        const song =
-          songs.find(
-            item =>
-              item.id === id
-          );
-
-
-        if (!song) {
+        if (
+          newVote !== 1 &&
+          newVote !== -1
+        ) {
           return;
         }
 
@@ -1594,25 +1776,43 @@
           true;
 
 
-        const newVotes =
-          Math.max(
-            0,
-            Number(song.votes || 0) +
-            change
-          );
+        statusElement.textContent =
+          "Stimme wird gespeichert …";
 
+
+        /*
+          upsert bedeutet:
+
+          - Wenn du bei diesem Song noch nicht
+            abgestimmt hast → neue Stimme erstellen.
+
+          - Wenn du schon abgestimmt hast →
+            bestehende Stimme ändern.
+        */
 
         const {
           error
         } = await db
-          .from("songs")
-          .update({
-            votes:
-              newVotes
-          })
-          .eq(
-            "id",
-            id
+          .from("song_votes")
+          .upsert(
+
+            {
+              song_id:
+                songId,
+
+              voter_id:
+                voterId,
+
+              vote:
+                newVote
+
+            },
+
+            {
+              onConflict:
+                "song_id,voter_id"
+            }
+
           );
 
 
@@ -1635,7 +1835,21 @@
         }
 
 
-        await loadSongs();
+        statusElement.textContent =
+          newVote === 1
+            ? "👍 Deine Stimme wurde gespeichert."
+            : "👎 Deine Stimme wurde gespeichert.";
+
+
+        await loadVotes();
+
+
+        setTimeout(() => {
+
+          statusElement.textContent =
+            "";
+
+        }, 1500);
 
       }
     );
@@ -1643,7 +1857,7 @@
 
     /*
     ============================================================
-    SORTIERUNG ÄNDERN
+    SORTIERUNG
     ============================================================
     */
 
@@ -1655,7 +1869,7 @@
 
     /*
     ============================================================
-    SUPABASE REALTIME
+    REALTIME
     ============================================================
     */
 
@@ -1674,6 +1888,23 @@
         () => {
 
           loadSongs();
+
+        }
+
+      )
+
+      .on(
+        "postgres_changes",
+
+        {
+          event: "*",
+          schema: "public",
+          table: "song_votes"
+        },
+
+        () => {
+
+          loadVotes();
 
         }
 
