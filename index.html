@@ -25,6 +25,25 @@
     .empty-title { color: #f4f5f5; font-weight: 800; margin-bottom: 6px; }
     .empty-text { color: var(--muted); font-size: 13px; }
     @media (max-width: 650px) { .toolbar { padding: 15px; } .search-row { grid-template-columns: 1fr; } .status-select { width: 100%; min-width: 0; } .song-meta { align-items: flex-start; flex-direction: column; gap: 7px; } }
+    /* Musikdatenbank / Autovervollständigung */
+    .music-search { position: relative; }
+    .music-results { margin-top: 8px; display: none; border: 1px solid rgba(64,224,208,.24); border-radius: 14px; overflow: hidden; background: rgba(5,10,12,.96); box-shadow: 0 14px 35px rgba(0,0,0,.28); }
+    .music-results.visible { display: block; }
+    .music-result { width: 100%; border: 0; border-bottom: 1px solid rgba(122,157,164,.16); background: transparent; color: var(--white); text-align: left; padding: 12px 14px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; font: inherit; }
+    .music-result:last-child { border-bottom: 0; }
+    .music-result:hover, .music-result:focus-visible { background: rgba(64,224,208,.08); outline: none; }
+    .music-result-main { min-width: 0; }
+    .music-result-title { font-weight: 800; line-height: 1.25; }
+    .music-result-artist { margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .music-result-action { flex: 0 0 auto; color: var(--cyan); font-size: 11px; font-weight: 800; white-space: nowrap; }
+    .music-hint { margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .music-selected { margin-top: 7px; color: var(--cyan); font-size: 12px; font-weight: 700; min-height: 17px; }
+    .music-loading { padding: 12px 14px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 650px) {
+      .music-result { align-items: flex-start; }
+      .music-result-action { font-size: 10px; }
+    }
+
     :root {
       --black: #050505;
       --panel: rgba(8, 14, 16, 0.88);
@@ -519,14 +538,19 @@
       </h2>
 
       <form id="songForm">
-        <div class="input-wrap">
-          <span class="input-icon">♫</span>
-          <input id="title" type="text" placeholder="Songtitel" required maxlength="120">
+        <div class="music-search">
+          <div class="input-wrap">
+            <span class="input-icon">♫</span>
+            <input id="title" type="text" placeholder="Songtitel oder Interpret suchen …" required maxlength="120" autocomplete="off">
+          </div>
+          <div id="musicResults" class="music-results" role="listbox" aria-label="Musikdatenbank-Ergebnisse"></div>
+          <div class="music-hint">Tippe mindestens 2 Zeichen – passende Songs aus der Musikdatenbank erscheinen automatisch.</div>
+          <div id="musicSelected" class="music-selected" aria-live="polite"></div>
         </div>
 
         <div class="input-wrap">
           <span class="input-icon">♙</span>
-          <input id="artist" type="text" placeholder="Interpret / Band" required maxlength="120">
+          <input id="artist" type="text" placeholder="Interpret / Band" required maxlength="120" autocomplete="off">
         </div>
 
         <div class="input-wrap">
@@ -590,6 +614,14 @@
     const filtersElement = document.getElementById("filters");
     const resultsInfoElement = document.getElementById("resultsInfo");
     const submitButton = form.querySelector("button[type='submit']");
+    const titleElement = document.getElementById("title");
+    const artistElement = document.getElementById("artist");
+    const musicResultsElement = document.getElementById("musicResults");
+    const musicSelectedElement = document.getElementById("musicSelected");
+
+    const MUSIC_SEARCH_FUNCTION = "music-search";
+    let musicSearchTimer = null;
+    let musicSearchRequestId = 0;
 
     const STATUS_OPTIONS = {
       suggestion: "💡 Vorschlag",
@@ -881,6 +913,114 @@
       renderSongs();
     }
 
+    function hideMusicResults() {
+      musicResultsElement.classList.remove("visible");
+      musicResultsElement.innerHTML = "";
+    }
+
+    function showMusicResultsMessage(message, loading = false) {
+      musicResultsElement.innerHTML = `<div class="${loading ? "music-loading" : "music-loading"}">${escapeHTML(message)}</div>`;
+      musicResultsElement.classList.add("visible");
+    }
+
+    function getArtistName(recording) {
+      const credits = recording?.["artist-credit"] || [];
+      if (!credits.length) return "";
+      return credits.map((credit, index) => {
+        const name = credit?.name || credit?.artist?.name || "";
+        const join = credit?.joinphrase || (index < credits.length - 1 ? " " : "");
+        return name + join;
+      }).join("").trim();
+    }
+
+    function renderMusicResults(results) {
+      if (!results.length) {
+        showMusicResultsMessage("Keine passenden Songs gefunden.");
+        return;
+      }
+
+      musicResultsElement.innerHTML = results.map((item, index) => {
+        const title = item.title || "Unbekannter Song";
+        const artist = item.artist || "Unbekannter Interpret";
+        return `
+          <button type="button" class="music-result" data-music-index="${index}" role="option">
+            <span class="music-result-main">
+              <span class="music-result-title">${escapeHTML(title)}</span>
+              <span class="music-result-artist">${escapeHTML(artist)}</span>
+            </span>
+            <span class="music-result-action">＋ AUSWÄHLEN</span>
+          </button>
+        `;
+      }).join("");
+
+      musicResultsElement.classList.add("visible");
+      musicResultsElement._results = results;
+    }
+
+    async function searchMusicDatabase(query) {
+      const requestId = ++musicSearchRequestId;
+      const cleanQuery = query.trim();
+
+      if (cleanQuery.length < 2) {
+        hideMusicResults();
+        musicSelectedElement.textContent = "";
+        return;
+      }
+
+      showMusicResultsMessage("🎵 Suche in der Musikdatenbank …", true);
+
+      try {
+        const { data, error } = await db.functions.invoke(MUSIC_SEARCH_FUNCTION, {
+          body: { query: cleanQuery }
+        });
+
+        if (requestId !== musicSearchRequestId) return;
+
+        if (error) throw error;
+
+        const results = Array.isArray(data?.results)
+          ? data.results
+          : Array.isArray(data?.recordings)
+            ? data.recordings
+            : [];
+        renderMusicResults(results);
+      } catch (error) {
+        console.error("Musikdatenbank:", error);
+        showMusicResultsMessage("⚠️ Musikdatenbank ist noch nicht verbunden. Du kannst den Song trotzdem manuell eingeben.");
+      }
+    }
+
+    titleElement.addEventListener("input", event => {
+      musicSelectedElement.textContent = "";
+      clearTimeout(musicSearchTimer);
+      const value = event.target.value;
+
+      if (value.trim().length < 2) {
+        hideMusicResults();
+        return;
+      }
+
+      musicSearchTimer = setTimeout(() => searchMusicDatabase(value), 500);
+    });
+
+    musicResultsElement.addEventListener("click", event => {
+      const button = event.target.closest(".music-result");
+      if (!button) return;
+
+      const results = musicResultsElement._results || [];
+      const result = results[Number(button.dataset.musicIndex)];
+      if (!result) return;
+
+      titleElement.value = result.title || "";
+      artistElement.value = result.artist || "";
+      musicSelectedElement.textContent = `✓ Aus Musikdatenbank ausgewählt: ${result.title} · ${result.artist}`;
+      hideMusicResults();
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest(".music-search")) hideMusicResults();
+    });
+
     form.addEventListener("submit", async event => {
       event.preventDefault();
 
@@ -892,6 +1032,26 @@
 
       submitButton.disabled = true;
       statusElement.textContent = "Song wird hinzugefügt…";
+
+      const { data: existingSongs, error: duplicateError } = await db
+        .from("songs")
+        .select("id,title,artist")
+        .ilike("title", title)
+        .ilike("artist", artist)
+        .limit(1);
+
+      if (duplicateError) {
+        console.error(duplicateError);
+        submitButton.disabled = false;
+        statusElement.textContent = "❌ Song konnte nicht geprüft werden: " + duplicateError.message;
+        return;
+      }
+
+      if (existingSongs && existingSongs.length > 0) {
+        submitButton.disabled = false;
+        statusElement.textContent = "ℹ️ Dieser Song ist bereits in FLYD vorhanden.";
+        return;
+      }
 
       const { error } = await db
         .from("songs")
@@ -912,6 +1072,8 @@
       }
 
       form.reset();
+      musicSelectedElement.textContent = "";
+      hideMusicResults();
       statusElement.textContent = "✅ Song wurde hinzugefügt.";
       await loadSongs();
     });
